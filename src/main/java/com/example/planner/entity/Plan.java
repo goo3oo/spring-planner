@@ -4,14 +4,16 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @AllArgsConstructor
-@Table(name = "schedule" )
+@Table(name = "plan")
 @NoArgsConstructor
-public class Schedule extends BaseEntity{
+@Getter
+public class Plan extends BaseEntity{
 
 //    @Column(nullable = false)
 //    private Long authorId;

@@ -3,7 +3,7 @@ package com.example.planner.dto;
 import lombok.Getter;
 
 @Getter
-public class ScheduleRequestDto {
+public class PlanRequestDto {
 
     private String author;
     private String title;
