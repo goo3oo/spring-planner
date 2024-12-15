@@ -5,7 +5,9 @@ import com.example.planner.dto.PlanResponseDto;
 import com.example.planner.entity.Plan;
 import com.example.planner.reopository.PlanRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -16,16 +18,18 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 
-public class PlanService {
+public class PlanServiceImpl implements PlanService{
 
     private final PlanRepository scheduleRepository;
     private final PlanRepository planRepository;
 
+    @Override
     public void createPlan(PlanRequestDto requestDto) {
         Plan plan = new Plan(requestDto.getAuthor(), requestDto.getTitle(), requestDto.getContent());
         scheduleRepository.save(plan);
     }
 
+    @Override
     public List<PlanResponseDto> findAllPlan(String author, String date) {
         author = convertEmptyToNull(author);
         date = convertEmptyToNull(date);
@@ -58,5 +62,11 @@ public class PlanService {
             }
         }
         return null;
+    }
+
+    @Override
+    public PlanResponseDto findPlanById(Long id) {
+        return scheduleRepository.findPlanById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 }

@@ -3,7 +3,8 @@ package com.example.planner.controller;
 import com.example.planner.dto.ApiResponseDto;
 import com.example.planner.dto.PlanListResponseDto;
 import com.example.planner.dto.PlanRequestDto;
-import com.example.planner.service.PlanService;
+import com.example.planner.dto.PlanResponseDto;
+import com.example.planner.service.PlanServiceImpl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 public class PlanController {
 
-    private final PlanService planService;
+    private final PlanServiceImpl planService;
 
     @PostMapping
     public ResponseEntity<ApiResponseDto> createPlan(@RequestBody PlanRequestDto requestDto) {
@@ -31,5 +32,11 @@ public class PlanController {
             @RequestParam(required = false) String date){
         PlanListResponseDto planListResponseDto = new PlanListResponseDto(planService.findAllPlan(author, date));
         return new ResponseEntity<>(planListResponseDto, HttpStatus.OK);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PlanResponseDto> findPlanById(
+            @PathVariable Long id){
+        return new ResponseEntity<>(planService.findPlanById(id),HttpStatus.OK);
     }
 }
