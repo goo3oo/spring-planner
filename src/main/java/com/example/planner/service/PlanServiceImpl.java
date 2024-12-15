@@ -1,18 +1,22 @@
 package com.example.planner.service;
 
+import com.example.planner.dto.ApiResponseDto;
 import com.example.planner.dto.PlanRequestDto;
 import com.example.planner.dto.PlanResponseDto;
 import com.example.planner.entity.Plan;
 import com.example.planner.reopository.PlanRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,13 +41,13 @@ public class PlanServiceImpl implements PlanService{
         LocalDate updatedAt = validateAndFormatDate(date);
         List<Plan> plans = planRepository.findByAuthorAndUpdatedAt(author,updatedAt);
         return plans.stream()
-                .map(schedule -> new PlanResponseDto(
-                        schedule.getId(),
-                        schedule.getAuthor(),
-                        schedule.getTitle(),
-                        schedule.getContent(),
-                        schedule.getCreatedAt(),
-                        schedule.getUpdatedAt()
+                .map(plan -> new PlanResponseDto(
+                        plan.getId(),
+                        plan.getAuthor(),
+                        plan.getTitle(),
+                        plan.getContent(),
+                        plan.getCreatedAt(),
+                        plan.getUpdatedAt()
                 ))
                 .collect(Collectors.toList());
     }
@@ -66,7 +70,15 @@ public class PlanServiceImpl implements PlanService{
 
     @Override
     public PlanResponseDto findPlanById(Long id) {
-        return scheduleRepository.findPlanById(id)
+        return planRepository.findPlanById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    @Override
+    @Transactional
+    public void updatePlan(Long id, PlanRequestDto requestDto) {
+        Plan plan = planRepository.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("id에 해당하는 일정이 없습니다."));
+        plan.updatePlan(requestDto.getTitle(), requestDto.getContent());
     }
 }

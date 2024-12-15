@@ -39,4 +39,12 @@ public class PlanController {
             @PathVariable Long id){
         return new ResponseEntity<>(planService.findPlanById(id),HttpStatus.OK);
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<ApiResponseDto> updatePlan(
+            @RequestBody PlanRequestDto requestDto,
+            @PathVariable Long id){
+        planService.updatePlan(id,requestDto);
+        return new ResponseEntity<>(new ApiResponseDto("일정이 수정되었습니다.",true),HttpStatus.OK);
+    }
 }
