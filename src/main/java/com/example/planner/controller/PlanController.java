@@ -47,4 +47,11 @@ public class PlanController {
         planService.updatePlan(id,requestDto);
         return new ResponseEntity<>(new ApiResponseDto("일정이 수정되었습니다.",true),HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ApiResponseDto> deletePlan(
+            @PathVariable Long id){
+        planService.deletePlan(id);
+        return new ResponseEntity<>(new ApiResponseDto("일정이 삭제되었습니다.",true),HttpStatus.OK);
+    }
 }

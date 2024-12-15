@@ -1,6 +1,5 @@
 package com.example.planner.service;
 
-import com.example.planner.dto.ApiResponseDto;
 import com.example.planner.dto.PlanRequestDto;
 import com.example.planner.dto.PlanResponseDto;
 
@@ -11,4 +10,5 @@ public interface PlanService {
     List<PlanResponseDto> findAllPlan(String author, String date);
     PlanResponseDto findPlanById(Long id);
     void updatePlan(Long id, PlanRequestDto requestDto);
+    void deletePlan(Long id);
 }

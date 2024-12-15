@@ -1,6 +1,5 @@
 package com.example.planner.service;
 
-import com.example.planner.dto.ApiResponseDto;
 import com.example.planner.dto.PlanRequestDto;
 import com.example.planner.dto.PlanResponseDto;
 import com.example.planner.entity.Plan;
@@ -16,7 +15,6 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -80,5 +78,13 @@ public class PlanServiceImpl implements PlanService{
         Plan plan = planRepository.findById(id)
                 .orElseThrow(()-> new EntityNotFoundException("id에 해당하는 일정이 없습니다."));
         plan.updatePlan(requestDto.getTitle(), requestDto.getContent());
+    }
+
+    @Override
+    @Transactional
+    public void deletePlan(Long id) {
+        Plan plan = planRepository.findById(id)
+                .orElseThrow(()-> new EntityNotFoundException("id에 해당하는 일정이 없습니다."));
+        planRepository.delete(plan);
     }
 }
