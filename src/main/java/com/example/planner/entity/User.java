@@ -30,4 +30,11 @@ public class User extends BaseEntity {
     @NotBlank(message = "email 주소를 입력해주세요.")
     private String email;
 
+    public void updatePassword(String password) {
+        this.password = password;
+    }
+
+    public void updateEmail(String email) {
+        this.email = email;
+    }
 }

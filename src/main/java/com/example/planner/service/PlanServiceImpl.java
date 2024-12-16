@@ -80,7 +80,7 @@ public class PlanServiceImpl implements PlanService{
     @Transactional
     public void updatePlan(Long id, PlanRequestDto requestDto) {
         Plan plan = planRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("id에 해당하는 일정이 없습니다."));
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"id에 해당하는 일정이 없습니다."));
         plan.updatePlan(requestDto.getTitle(), requestDto.getContent());
     }
 
@@ -88,7 +88,7 @@ public class PlanServiceImpl implements PlanService{
     @Transactional
     public void deletePlan(Long id) {
         Plan plan = planRepository.findById(id)
-                .orElseThrow(()-> new EntityNotFoundException("id에 해당하는 일정이 없습니다."));
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"id에 해당하는 일정이 없습니다."));
         planRepository.delete(plan);
     }
 }
