@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 
 public class PlanMapper {
-    public static PlanResponseDto toDto(Plan plan){
+    public static PlanResponseDto planToDto(Plan plan){
         return new PlanResponseDto(
                 plan.getId(),
                 plan.getAuthorId().getUserId(),

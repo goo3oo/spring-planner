@@ -47,7 +47,7 @@ public class PlanServiceImpl implements PlanService{
         List<Plan> plans = planRepository.findByAuthorAndUpdatedAt(userId,updatedAt);
 
         return plans.stream()
-                .map(PlanMapper::toDto)
+                .map(PlanMapper::planToDto)
                 .collect(Collectors.toList());
     }
 
@@ -72,7 +72,7 @@ public class PlanServiceImpl implements PlanService{
         Plan plan = planRepository.findPlanById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        return PlanMapper.toDto(plan);
+        return PlanMapper.planToDto(plan);
 
     }
 
