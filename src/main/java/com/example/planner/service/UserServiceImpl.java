@@ -49,4 +49,11 @@ public class UserServiceImpl implements UserService{
         user.updateEmail(requestDto.getEmail());
     }
 
+    @Override
+    public void deleteEmail(String userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"해당하는 사용자가 없습니다."));
+        userRepository.delete(user);
+    }
+
 }

@@ -10,4 +10,5 @@ public interface UserService {
     UserResponseDto findUserByUserId(String userId);
     void updatePassword(String userId, UserUpdatePasswordRequestDto requestDto);
     void updateEmail(String userId, UserUpdateEmailRequestDto requestDto);
+    void deleteEmail(String userId);
 }

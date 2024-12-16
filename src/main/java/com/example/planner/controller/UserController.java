@@ -40,4 +40,11 @@ public class UserController {
         service.updateEmail(userId, requestDto);
         return new ResponseEntity<>(new ApiResponseDto("사용자 정보가 수정되었습니다.",true),HttpStatus.OK);
     }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<ApiResponseDto> deleteUser(
+            @PathVariable String userId){
+        service.deleteEmail(userId);
+        return new ResponseEntity<>(new ApiResponseDto("사용자 정보가 삭제되었습니다.",true),HttpStatus.OK);
+    }
 }
