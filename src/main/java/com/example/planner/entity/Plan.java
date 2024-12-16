@@ -1,8 +1,6 @@
 package com.example.planner.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,11 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Getter
 public class Plan extends BaseEntity{
 
-//    @Column(nullable = false)
-//    private Long authorId;
-    @Column(nullable = false)
-    @NotBlank(message = "작성자를 입력해주세요.")
-    private String author;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id", nullable = false)
+    private User authorId;
 
     @Column(nullable = false)
     @NotBlank(message = "제목을 입력해주세요.")

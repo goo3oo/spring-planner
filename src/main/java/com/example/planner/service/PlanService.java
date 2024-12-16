@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface PlanService {
     void createPlan(PlanRequestDto requestDto);
-    List<PlanResponseDto> findAllPlan(String author, String date);
+    List<PlanResponseDto> findAllPlan(String userId, String date);
     PlanResponseDto findPlanById(Long id);
     void updatePlan(Long id, PlanRequestDto requestDto);
     void deletePlan(Long id);

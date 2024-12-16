@@ -28,9 +28,9 @@ public class PlanController {
 
     @GetMapping
     public ResponseEntity<PlanListResponseDto> findAllPlan(
-            @RequestParam(required = false) String author,
+            @RequestParam(required = false) String userId,
             @RequestParam(required = false) String date){
-        PlanListResponseDto planListResponseDto = new PlanListResponseDto(planService.findAllPlan(author, date));
+        PlanListResponseDto planListResponseDto = new PlanListResponseDto(planService.findAllPlan(userId, date));
         return new ResponseEntity<>(planListResponseDto, HttpStatus.OK);
     }
 

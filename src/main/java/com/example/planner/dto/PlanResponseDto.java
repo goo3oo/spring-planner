@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public class PlanResponseDto {
 
     private Long id;
-    private String author;
+    private String userId;
     private String title;
     private String content;
     private LocalDate createdAt;
