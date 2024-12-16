@@ -21,6 +21,10 @@ public class User extends BaseEntity {
     @NotBlank(message = "Id를 입력해주세요.")
     private String userId;
 
+    @Column(nullable = false)
+    @NotBlank(message = "비밀번호를 입력해주세요.")
+    private String password;
+
     @Email
     @Column(nullable = false, unique = true)
     @NotBlank(message = "email 주소를 입력해주세요.")

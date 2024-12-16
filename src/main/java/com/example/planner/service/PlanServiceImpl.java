@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 
 public class PlanServiceImpl implements PlanService{
 
-    private final PlanRepository scheduleRepository;
     private final PlanRepository planRepository;
     private final UserRepository userRepository;
 
@@ -36,7 +35,7 @@ public class PlanServiceImpl implements PlanService{
 
         Plan plan = requestDto.dtoToEntity(user);
 
-        scheduleRepository.save(plan);
+        planRepository.save(plan);
     }
 
     @Override
