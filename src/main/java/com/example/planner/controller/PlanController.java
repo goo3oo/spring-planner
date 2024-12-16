@@ -4,7 +4,7 @@ import com.example.planner.dto.ApiResponseDto;
 import com.example.planner.dto.PlanListResponseDto;
 import com.example.planner.dto.PlanRequestDto;
 import com.example.planner.dto.PlanResponseDto;
-import com.example.planner.service.PlanServiceImpl;
+import com.example.planner.service.PlanService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/plans")
 @RequiredArgsConstructor
 
-public class PlanController {
+public class    PlanController {
 
-    private final PlanServiceImpl planService;
+    private final PlanService planService;
 
     @PostMapping
     public ResponseEntity<ApiResponseDto> createPlan(@RequestBody PlanRequestDto requestDto) {

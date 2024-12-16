@@ -21,12 +21,6 @@ public class UserServiceImpl implements UserService{
     private final UserRepository userRepository;
 
     @Override
-    public void createUser(UserRequestDto requestDto) {
-        User user = new User(requestDto.getUserId(),requestDto.getPassword(),requestDto.getEmail());
-        userRepository.save(user);
-    }
-
-    @Override
     public UserResponseDto findUserByUserId(String userId) {
         User user = userRepository.findByUserId(userId)
                 .orElseThrow(()->new ResponseStatusException(HttpStatus.NOT_FOUND,"해당하는 사용자가 없습니다."));
