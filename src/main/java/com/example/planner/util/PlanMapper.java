@@ -10,7 +10,7 @@ public class PlanMapper {
     public static PlanResponseDto planToDto(Plan plan){
         return new PlanResponseDto(
                 plan.getId(),
-                plan.getAuthorId().getUserId(),
+                plan.getUser().getUserId(),
                 plan.getTitle(),
                 plan.getContent(),
                 plan.getCreatedAt(),

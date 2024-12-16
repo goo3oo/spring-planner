@@ -15,8 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 public class Plan extends BaseEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "author_id", nullable = false)
-    private User authorId;
+    @JoinColumn(name = "unique_id", nullable = false)
+    private User user;
 
     @Column(nullable = false)
     @NotBlank(message = "제목을 입력해주세요.")

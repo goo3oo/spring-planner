@@ -7,7 +7,6 @@ import com.example.planner.entity.User;
 import com.example.planner.reopository.PlanRepository;
 import com.example.planner.reopository.UserRepository;
 import com.example.planner.util.PlanMapper;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
