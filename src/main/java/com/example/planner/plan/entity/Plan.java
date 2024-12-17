@@ -16,8 +16,12 @@ import jakarta.validation.constraints.NotBlank;
 public class Plan extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "unique_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Column(nullable = false)
     @NotBlank(message = "제목을 입력해주세요.")
@@ -26,6 +30,11 @@ public class Plan extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
+    public Plan(User user, String title, String content){
+        this.user = user;
+        this.title = title;
+        this.content = content;
+    }
 
     public void updatePlan(String title, String content) {
         this.title = title;

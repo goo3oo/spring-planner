@@ -4,5 +4,5 @@ import lombok.Getter;
 
 @Getter
 public class UserUpdateUserIdRequestDto {
-    private String userId;
+    private String userName;
 }

@@ -9,8 +9,8 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class UserResponseDto {
 
-    private String userId;
     private String email;
+    private String userName;
     private LocalDate createdAt;
     private LocalDate updatedAt;
 

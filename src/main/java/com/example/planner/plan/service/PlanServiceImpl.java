@@ -1,13 +1,17 @@
 package com.example.planner.plan.service;
 
+import com.example.planner.common.constant.AuthFailMessage;
+import com.example.planner.common.exception.AuthenticationException;
+import com.example.planner.plan.constant.PlanFailMessage;
 import com.example.planner.plan.dto.PlanRequestDto;
 import com.example.planner.plan.dto.PlanResponseDto;
 import com.example.planner.plan.entity.Plan;
+import com.example.planner.plan.exception.PlanNotFoundException;
 import com.example.planner.user.entity.User;
 import com.example.planner.plan.repository.PlanRepository;
 import com.example.planner.user.reopository.UserRepository;
-import com.example.planner.util.AuthSession;
-import com.example.planner.util.PlanMapper;
+import com.example.planner.common.util.AuthSession;
+import com.example.planner.common.util.PlanMapper;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,35 +28,71 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 
+@Transactional
 public class PlanServiceImpl implements PlanService {
 
     private final PlanRepository planRepository;
     private final UserRepository userRepository;
 
     @Override
-    public void createPlan(PlanRequestDto requestDto, HttpSession session) {
+    public PlanResponseDto createPlan(PlanRequestDto requestDto, HttpSession session) {
         Long userUniqueId = AuthSession.getSession(session);
         User user = userRepository.findById(userUniqueId)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "일치하는 사용자 정보가 없습니다."));
+                .orElseThrow(() -> new AuthenticationException(AuthFailMessage.NO_LOGIN_INFO));
         Plan plan = requestDto.dtoToEntity(user);
 
         planRepository.save(plan);
+
+        return PlanMapper.toDto(plan);
     }
 
     @Override
-    public List<PlanResponseDto> findAllPlan(String userId, String date) {
-        userId = convertEmptyToNull(userId);
+    @Transactional(readOnly = true)
+    public List<PlanResponseDto> findAllPlan(String userName, String date) {
+        userName = convertEmptyToNull(userName);
         date = convertEmptyToNull(date);
 
         LocalDate updatedAt = validateAndFormatDate(date);
-        List<Plan> plans = planRepository.findByAuthorAndUpdatedAt(userId,updatedAt);
+        List<Plan> plans = planRepository.findByAuthorAndUpdatedAt(userName, updatedAt);
+
+        if (plans.isEmpty()) {
+            throw new PlanNotFoundException(PlanFailMessage.PLAN_NOT_FOUND);
+        }
 
         return plans.stream()
-                .map(PlanMapper::planToDto)
+                .map(PlanMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    private String convertEmptyToNull(String value){
+    @Override
+    @Transactional(readOnly = true)
+    public PlanResponseDto findPlanById(Long id) {
+        Plan plan = planRepository.findPlanById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        if (plan == null) {
+            throw new PlanNotFoundException(PlanFailMessage.PLAN_NOT_FOUND);
+        }
+
+        return PlanMapper.toDto(plan);
+    }
+
+    @Override
+    public PlanResponseDto updatePlan(Long id, PlanRequestDto requestDto) {
+        Plan plan = planRepository.findById(id)
+                .orElseThrow(() -> new PlanNotFoundException(PlanFailMessage.PLAN_NOT_FOUND));
+        plan.updatePlan(requestDto.getTitle(), requestDto.getContent());
+        return PlanMapper.toDto(plan);
+    }
+
+    @Override
+    public void deletePlan(Long id) {
+        Plan plan = planRepository.findById(id)
+                .orElseThrow(() -> new PlanNotFoundException(PlanFailMessage.PLAN_NOT_FOUND));
+        planRepository.delete(plan);
+    }
+
+    private String convertEmptyToNull(String value) {
         return (value != null && value.isEmpty()) ? null : value;
     }
 
@@ -66,30 +106,5 @@ public class PlanServiceImpl implements PlanService {
             }
         }
         return null;
-    }
-
-    @Override
-    public PlanResponseDto findPlanById(Long id) {
-        Plan plan = planRepository.findPlanById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-        return PlanMapper.planToDto(plan);
-
-    }
-
-    @Override
-    @Transactional
-    public void updatePlan(Long id, PlanRequestDto requestDto) {
-        Plan plan = planRepository.findById(id)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"id에 해당하는 일정이 없습니다."));
-        plan.updatePlan(requestDto.getTitle(), requestDto.getContent());
-    }
-
-    @Override
-    @Transactional
-    public void deletePlan(Long id) {
-        Plan plan = planRepository.findById(id)
-                .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND,"id에 해당하는 일정이 없습니다."));
-        planRepository.delete(plan);
     }
 }

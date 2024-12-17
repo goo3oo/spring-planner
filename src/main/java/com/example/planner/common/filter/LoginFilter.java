@@ -1,11 +1,10 @@
 package com.example.planner.common.filter;
 
-import com.example.planner.auth.constant.LoginFailMessage;
-import com.example.planner.auth.exception.LoginException;
-import com.example.planner.util.AuthSession;
+import com.example.planner.common.constant.AuthFailMessage;
+import com.example.planner.common.exception.AuthenticationException;
+import com.example.planner.common.util.AuthSession;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.util.PatternMatchUtils;
 
@@ -30,7 +29,7 @@ public class LoginFilter implements Filter {
             HttpSession session = httpRequest.getSession(false);
 
             if (session == null || session.getAttribute(AuthSession.SESSION_KEY) == null ){
-                throw new LoginException(LoginFailMessage.LOGIN_REQUIRED);
+                throw new AuthenticationException(AuthFailMessage.LOGIN_REQUIRED);
             }
         }
         chain.doFilter(request, response);

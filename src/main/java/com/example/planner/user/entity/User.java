@@ -1,9 +1,7 @@
 package com.example.planner.user.entity;
 
 import com.example.planner.common.entity.BaseEntity;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -18,24 +16,34 @@ import lombok.NoArgsConstructor;
 
 public class User extends BaseEntity {
 
-    @Column(name = "user_id", nullable = false, unique = true)
-    @NotBlank(message = "Id를 입력해주세요.")
-    private String userId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Email
+    @Column(nullable = false, unique = true)
+    @NotBlank(message = "이메일 주소를 입력해주세요.")
+    private String email;
+
+    @Column(nullable = false, unique = true)
+    @NotBlank(message = "사용자 이름을 입력해주세요.")
+    private String userName;
 
     @Column(nullable = false)
     @NotBlank(message = "비밀번호를 입력해주세요.")
     private String password;
 
-    @Email
-    @Column(nullable = false, unique = true)
-    @NotBlank(message = "email 주소를 입력해주세요.")
-    private String email;
+    public User(String email, String userName, String password){
+        this.email = email;
+        this.userName = userName;
+        this.password = password;
+    }
 
     public void updatePassword(String password) {
         this.password = password;
     }
 
-    public void updateUserId(String userId) {
-        this.userId = userId;
+    public void updateUserName(String userName) {
+        this.userName = userName;
     }
 }
