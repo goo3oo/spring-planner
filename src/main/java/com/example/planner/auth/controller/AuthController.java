@@ -1,11 +1,12 @@
 package com.example.planner.auth.controller;
 
-import com.example.planner.auth.exception.LoginException;
+import com.example.planner.auth.dto.AuthResponseDto;
+import com.example.planner.common.constant.AuthSuccessMessage;
+import com.example.planner.common.exception.AuthenticationException;
 import com.example.planner.common.dto.ApiResponseDto;
 import com.example.planner.auth.dto.LoginRequestDto;
-import com.example.planner.user.dto.UserRequestDto;
+import com.example.planner.auth.dto.SignupRequestDto;
 import com.example.planner.auth.service.AuthService;
-import com.example.planner.util.AuthSession;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,26 +24,32 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponseDto> signUp(
-            @RequestBody UserRequestDto requestDto) {
-        authService.createUser(requestDto);
-        return new ResponseEntity<>(new ApiResponseDto("회원가입이 완료되었습니다.", true), HttpStatus.CREATED);
+    public ResponseEntity<ApiResponseDto<AuthResponseDto>> signUp(
+            @RequestBody SignupRequestDto requestDto) {
+        AuthResponseDto responseDto = authService.createUser(requestDto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponseDto.success(AuthSuccessMessage.SIGN_UP_SUCCESS.getMessage(), responseDto));
     }
+    // 같은 메일주소가 존재하는 경우
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponseDto> logIn(
+    public ResponseEntity<ApiResponseDto<AuthResponseDto>> logIn(
             @RequestBody LoginRequestDto requestDto, HttpSession session) {
         try {
-            ApiResponseDto responseDto = authService.login(requestDto, session);
-            return new ResponseEntity<>(responseDto,HttpStatus.OK);
-        }catch (LoginException e){
-            return new ResponseEntity<>(new ApiResponseDto(e.getMessage(),false),HttpStatus.UNAUTHORIZED);
+            AuthResponseDto responseDto = authService.logIn(requestDto, session);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(ApiResponseDto.success(AuthSuccessMessage.LOGIN_SUCCESS.getMessage(), responseDto));
+        }catch (AuthenticationException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponseDto.fail(e.getMessage()));
         }
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponseDto> logOut(HttpSession session){
-        AuthSession.invalidSession(session);
-        return new ResponseEntity<>(new ApiResponseDto("로그아웃 되었습ㄴ다.",true),HttpStatus.OK);
+    public ResponseEntity<ApiResponseDto<AuthResponseDto>> logOut(HttpSession session){
+        AuthResponseDto responseDto = authService.logOut(session);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(ApiResponseDto.success(AuthSuccessMessage.LOGOUT_SUCCESS.getMessage(),responseDto));
     }
+    // 로그인상태가 아닌 경우
 }

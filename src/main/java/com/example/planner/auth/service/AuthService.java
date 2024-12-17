@@ -1,11 +1,12 @@
 package com.example.planner.auth.service;
 
+import com.example.planner.auth.dto.AuthResponseDto;
 import com.example.planner.auth.dto.LoginRequestDto;
-import com.example.planner.common.dto.ApiResponseDto;
-import com.example.planner.user.dto.UserRequestDto;
+import com.example.planner.auth.dto.SignupRequestDto;
 import jakarta.servlet.http.HttpSession;
 
 public interface AuthService {
-    void createUser(UserRequestDto requestDto);
-    ApiResponseDto login(LoginRequestDto requestDto, HttpSession session);
+    AuthResponseDto createUser(SignupRequestDto requestDto);
+    AuthResponseDto logIn(LoginRequestDto requestDto, HttpSession session);
+    AuthResponseDto logOut(HttpSession session);
 }

@@ -7,9 +7,9 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 public interface PlanService {
-    void createPlan(PlanRequestDto requestDto, HttpSession session);
+    PlanResponseDto createPlan(PlanRequestDto requestDto, HttpSession session);
     List<PlanResponseDto> findAllPlan(String userId, String date);
     PlanResponseDto findPlanById(Long id);
-    void updatePlan(Long id, PlanRequestDto requestDto);
+    PlanResponseDto updatePlan(Long id, PlanRequestDto requestDto);
     void deletePlan(Long id);
 }
