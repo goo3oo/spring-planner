@@ -1,7 +1,7 @@
 package com.example.planner.util;
 
-import com.example.planner.dto.PlanResponseDto;
-import com.example.planner.entity.Plan;
+import com.example.planner.plan.dto.PlanResponseDto;
+import com.example.planner.plan.entity.Plan;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor

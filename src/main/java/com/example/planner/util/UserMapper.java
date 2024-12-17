@@ -1,7 +1,7 @@
 package com.example.planner.util;
 
-import com.example.planner.dto.UserResponseDto;
-import com.example.planner.entity.User;
+import com.example.planner.user.dto.UserResponseDto;
+import com.example.planner.user.entity.User;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
