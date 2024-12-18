@@ -22,7 +22,7 @@ public class SignupRequestDto {
             message = "비밀번호는 4~20자 내로 입력해주세요. 특수문자 '< > ? { } & ' \" / ; % 공백 ( ) ^ = #'를 포함할 수 없습니다.")
     private String password;
 
-    public User toEntity(){
-        return new User(email, userName, password);
+    public User toEntity(String encodedPassword){
+        return new User(email, userName, encodedPassword);
     }
 }

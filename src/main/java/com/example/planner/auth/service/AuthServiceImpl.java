@@ -1,6 +1,7 @@
 package com.example.planner.auth.service;
 
 import com.example.planner.auth.dto.AuthResponseDto;
+import com.example.planner.common.config.PasswordEncoder;
 import com.example.planner.common.constant.AuthFailMessage;
 import com.example.planner.auth.dto.LoginRequestDto;
 import com.example.planner.common.exception.AuthenticationException;
@@ -19,10 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthServiceImpl implements AuthService{
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public AuthResponseDto createUser(SignupRequestDto requestDto) {
-        User user = requestDto.toEntity();
+        String EncodedPassword = passwordEncoder.encode(requestDto.getPassword());
+
+        User user = requestDto.toEntity(EncodedPassword);
 
         userRepository.save(user);
         return new AuthResponseDto(user.getEmail(), user.getUserName());
@@ -41,7 +45,8 @@ public class AuthServiceImpl implements AuthService{
         User user = userRepository.findByEmail(requestDto.getEmail())
                 .orElseThrow(() -> new AuthenticationException(AuthFailMessage.EMAIL_NOT_FOUND));
 
-        if (!user.getPassword().equals(requestDto.getPassword())) {
+
+        if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
             throw new AuthenticationException(AuthFailMessage.INVALID_PASSWORD);
         }
 
