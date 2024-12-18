@@ -9,7 +9,6 @@
 
     @Getter
     public class PlanRequestDto {
-
         @NotEmpty(message = "일정 제목을 입력해주세요.")
         @Size(min = 1, max = 50, message = "일정 제목은 1~50자 내로 입력해주세요.")
         private String title;

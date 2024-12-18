@@ -1,6 +1,5 @@
 package com.example.planner.comment.controller;
 
-import com.example.planner.comment.constant.CommentFailMessage;
 import com.example.planner.comment.constant.CommentSuccessMessage;
 import com.example.planner.comment.dto.CommentListResponseDto;
 import com.example.planner.comment.dto.CommentRequestDto;
@@ -15,7 +14,6 @@ import com.example.planner.common.util.AuthSession;
 import com.example.planner.common.util.BindingResultUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.tool.schema.spi.CommandAcceptanceException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -25,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/comments")
 @RequiredArgsConstructor
 public class CommentController {
-
     private final CommentService commentService;
     private final CommentRepository commentRepository;
 
@@ -57,8 +54,8 @@ public class CommentController {
         try {
             CommentListResponseDto responseDto = new CommentListResponseDto(commentService.findAllCommentByUserId(userId));
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponseDto.success(CommentSuccessMessage.FIND_ALL_COMMENTS_BY_USER_SUCCESS.getMessage(),responseDto));
-        }catch (CommentNotFoundException e){
+                    .body(ApiResponseDto.success(CommentSuccessMessage.FIND_ALL_COMMENTS_BY_USER_SUCCESS.getMessage(), responseDto));
+        } catch (CommentNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ApiResponseDto.fail(e.getMessage()));
         }
@@ -68,11 +65,11 @@ public class CommentController {
     public ResponseEntity<ApiResponseDto<CommentListResponseDto>> findAllCommentByPlanId(
             @PathVariable Long commentId
     ) {
-        try{
+        try {
             CommentListResponseDto responseDto = new CommentListResponseDto(commentService.findAllCommentByPlanId(commentId));
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponseDto.success(CommentSuccessMessage.FIND_ALL_COMMENTS_BY_PLAN_SUCCESS.getMessage(),responseDto));
-        }catch (CommentNotFoundException e){
+                    .body(ApiResponseDto.success(CommentSuccessMessage.FIND_ALL_COMMENTS_BY_PLAN_SUCCESS.getMessage(), responseDto));
+        } catch (CommentNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ApiResponseDto.fail(e.getMessage()));
         }
@@ -85,8 +82,8 @@ public class CommentController {
         try {
             CommentResponseDto responseDto = commentService.findCommentById(userId);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponseDto.success(CommentSuccessMessage.FIND_COMMENT_BY_COMMENT_SUCCESS.getMessage(),responseDto));
-        }catch (CommentNotFoundException e){
+                    .body(ApiResponseDto.success(CommentSuccessMessage.FIND_COMMENT_BY_COMMENT_SUCCESS.getMessage(), responseDto));
+        } catch (CommentNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ApiResponseDto.fail(e.getMessage()));
         }
@@ -103,15 +100,14 @@ public class CommentController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ValidationResponseDto.fail(BindingResultUtils.extractErrorMessages(bindingResult)));
         }
-        try{
+        try {
             CommentResponseDto responseDto = commentService.updateComment(commentId, sessionUserId, requestDto);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponseDto.success(CommentSuccessMessage.UPDATE_COMMENT_SUCCESS.getMessage(),responseDto));
-
-        }catch (CommentNotFoundException e){
+                    .body(ApiResponseDto.success(CommentSuccessMessage.UPDATE_COMMENT_SUCCESS.getMessage(), responseDto));
+        } catch (CommentNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ApiResponseDto.fail(e.getMessage()));
-        }catch (AuthenticationException e){
+        } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponseDto.fail(e.getMessage()));
         }
@@ -122,14 +118,14 @@ public class CommentController {
             @PathVariable Long commentId,
             @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
     ) {
-        try{
+        try {
             commentService.deleteComment(commentId, sessionUserId);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ApiResponseDto.success(CommentSuccessMessage.DELETE_COMMENT_SUCCESS.getMessage()));
-        }catch (CommentNotFoundException e){
+        } catch (CommentNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ApiResponseDto.fail(e.getMessage()));
-        }catch (AuthenticationException e){
+        } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponseDto.fail(e.getMessage()));
         }

@@ -6,6 +6,7 @@ import com.example.planner.common.exception.AuthenticationException;
 import com.example.planner.common.util.AuthSession;
 import com.example.planner.common.util.BindingResultUtils;
 import com.example.planner.user.constant.UserSuccessMessage;
+import com.example.planner.user.dto.UserListResponseDto;
 import com.example.planner.user.dto.UserResponseDto;
 import com.example.planner.user.exception.UserNotFoundException;
 import com.example.planner.user.service.UserService;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/users")
 @RequiredArgsConstructor
 public class UserController {
-
     private final UserService service;
 
     @GetMapping("/{id}")
@@ -37,13 +37,25 @@ public class UserController {
         }
     }
 
+    @GetMapping
+    public ResponseEntity<ApiResponseDto<UserListResponseDto>> findAllUser(){
+        try {
+            UserListResponseDto responseDto = new UserListResponseDto(service.findAllUser());
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(ApiResponseDto.success(UserSuccessMessage.USER_FIND_SUCCESS.getMessage(),responseDto));
+        }catch (UserNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponseDto.fail(e.getMessage()));
+        }
+    }
+
     @PatchMapping("/{id}/password")
     public ResponseEntity<?> updatePassword(
             @Valid @RequestBody UserUpdatePasswordRequestDto requestDto,
             BindingResult bindingResult,
             @PathVariable Long id,
-            @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId) {
-
+            @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
+    ) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ValidationResponseDto.fail(BindingResultUtils.extractErrorMessages(bindingResult)));
@@ -67,8 +79,8 @@ public class UserController {
             @Valid @RequestBody UserUpdateUserIdRequestDto requestDto,
             BindingResult bindingResult,
             @PathVariable Long id,
-            @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId) {
-
+            @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
+    ) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ValidationResponseDto.fail(BindingResultUtils.extractErrorMessages(bindingResult)));

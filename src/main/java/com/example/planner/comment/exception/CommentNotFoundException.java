@@ -5,7 +5,6 @@ import lombok.Getter;
 
 @Getter
 public class CommentNotFoundException extends RuntimeException{
-
     private final CommentFailMessage failReason;
 
     public CommentNotFoundException(CommentFailMessage failReason){

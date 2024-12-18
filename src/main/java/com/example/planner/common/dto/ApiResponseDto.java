@@ -6,7 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class ApiResponseDto<T> {
-
     private String message;
     private boolean success;
     private T data;

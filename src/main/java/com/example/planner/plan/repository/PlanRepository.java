@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PlanRepository extends JpaRepository<Plan, Long> {
-
     @EntityGraph(attributePaths = {"user"})
     @Query("SELECT p FROM Plan p LEFT JOIN p.user u " +
             "WHERE (:userName IS NULL OR p.user.userName = :userName) " +

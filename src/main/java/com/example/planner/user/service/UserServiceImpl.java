@@ -14,9 +14,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @RequiredArgsConstructor
-
 @Transactional
 public class UserServiceImpl implements UserService{
 
@@ -29,6 +31,18 @@ public class UserServiceImpl implements UserService{
                 .orElseThrow(()->new UserNotFoundException(UserFailMessage.USER_NOT_FOUND));
 
         return UserMapper.toDto(user);
+    }
+
+    @Override
+    public List<UserResponseDto> findAllUser() {
+        List<User> users = userRepository.findAll();
+
+        if (users.isEmpty()) {
+            throw new UserNotFoundException(UserFailMessage.USER_NOT_FOUND);
+        }
+        return users.stream()
+                .map(UserMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -16,5 +16,4 @@ public class CommentRequestDto {
     public Comment toEntity(User user, Plan plan){
         return new Comment(user, plan, content);
     }
-
 }

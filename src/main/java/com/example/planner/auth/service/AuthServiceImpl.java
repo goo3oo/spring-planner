@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class AuthServiceImpl implements AuthService{
-
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -48,13 +47,10 @@ public class AuthServiceImpl implements AuthService{
         User user = userRepository.findByEmail(requestDto.getEmail())
                 .orElseThrow(() -> new AuthenticationException(AuthFailMessage.EMAIL_NOT_FOUND));
 
-
         if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
             throw new AuthenticationException(AuthFailMessage.INVALID_PASSWORD);
         }
-
         AuthSession.setSession(session, user.getId());
-
         return new AuthResponseDto(user.getEmail(), user.getUserName());
     }
 
@@ -68,7 +64,6 @@ public class AuthServiceImpl implements AuthService{
                 .orElseThrow(()->new AuthenticationException(AuthFailMessage.USER_NOT_FOUND));
 
         AuthSession.invalidSession(session);
-
         return new AuthResponseDto(user.getEmail(),user.getUserName());
     }
 

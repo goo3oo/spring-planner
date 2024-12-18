@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class PlanServiceImpl implements PlanService {
-
     private final PlanRepository planRepository;
     private final UserRepository userRepository;
 

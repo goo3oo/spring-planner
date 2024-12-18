@@ -57,7 +57,6 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ValidationResponseDto.fail(BindingResultUtils.extractErrorMessages(bindingResult)));
         }
-
         try {
             AuthResponseDto responseDto = authService.logIn(requestDto, session);
             return ResponseEntity.status(HttpStatus.OK)

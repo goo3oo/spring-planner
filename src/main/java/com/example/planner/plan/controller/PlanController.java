@@ -23,15 +23,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/plans")
 @RequiredArgsConstructor
 public class PlanController {
-
     private final PlanService planService;
 
     @PostMapping
     public ResponseEntity<?> createPlan(
             @Valid @RequestBody PlanRequestDto requestDto,
             BindingResult bindingResult,
-            HttpSession session) {
-
+            HttpSession session
+    ) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ValidationResponseDto.fail(BindingResultUtils.extractErrorMessages(bindingResult)));

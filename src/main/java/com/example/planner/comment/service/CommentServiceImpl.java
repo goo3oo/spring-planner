@@ -26,14 +26,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional
 public class CommentServiceImpl implements CommentService {
-
     private final PlanRepository planRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
 
     @Override
-    public CommentResponseDto postComment(CommentRequestDto requestDto, Long sessionUserId, Long planId) {
-
+    public CommentResponseDto postComment(
+            CommentRequestDto requestDto,
+            Long sessionUserId,
+            Long planId
+    ) {
         if (sessionUserId == null) {
             throw new AuthenticationException(AuthFailMessage.USER_LOGGED_OUT);
         }
@@ -46,7 +48,6 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = requestDto.toEntity(user, plan);
 
         commentRepository.save(comment);
-
         return CommentMapper.toDto(comment);
     }
 

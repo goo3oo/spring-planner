@@ -2,7 +2,6 @@ package com.example.planner.comment.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
 import java.time.LocalDate;
 
 @AllArgsConstructor

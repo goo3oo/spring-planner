@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentMapper {
-
     public static CommentResponseDto toDto(Comment comment){
         String userName = (comment.getUser() != null) ? comment.getUser().getUserName() : "사용자 삭제됨";
         String email = (comment.getUser() != null) ? comment.getUser().getEmail() : "사용자 삭제됨";

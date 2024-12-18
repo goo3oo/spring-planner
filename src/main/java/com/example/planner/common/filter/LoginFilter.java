@@ -12,7 +12,6 @@ import java.io.IOException;
 
 public class LoginFilter implements Filter {
     private static final String[] WHITE_LIST = {"/", "/auth/signup", "/auth/login", "/auth/logout"};
-
     @Override
     public void doFilter(
             ServletRequest request,
@@ -22,8 +21,6 @@ public class LoginFilter implements Filter {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String requestURI = httpRequest.getRequestURI();
-
-        //HttpServletResponse httpResponse = (HttpServletResponse) response;
 
         if (!isWhiteList(requestURI) && !isGetMethod(httpRequest)){
             HttpSession session = httpRequest.getSession(false);
