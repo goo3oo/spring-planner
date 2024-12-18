@@ -71,17 +71,27 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public PlanResponseDto updatePlan(Long id, PlanRequestDto requestDto) {
+    public PlanResponseDto updatePlan(Long id, Long sessionUserId, PlanRequestDto requestDto) {
         Plan plan = planRepository.findById(id)
                 .orElseThrow(() -> new PlanNotFoundException(PlanFailMessage.PLAN_NOT_FOUND));
+
+        if (!plan.getUser().getId().equals(sessionUserId)) {
+            throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_UPDATE_ACCESS);
+        }
+
         plan.updatePlan(requestDto.getTitle(), requestDto.getContent());
         return PlanMapper.toDto(plan);
     }
 
     @Override
-    public void deletePlan(Long id) {
+    public void deletePlan(Long id, Long sessionUserId) {
         Plan plan = planRepository.findById(id)
                 .orElseThrow(() -> new PlanNotFoundException(PlanFailMessage.PLAN_NOT_FOUND));
+
+        if (!plan.getUser().getId().equals(sessionUserId)) {
+            throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_UPDATE_ACCESS);
+        }
+
         planRepository.delete(plan);
     }
 

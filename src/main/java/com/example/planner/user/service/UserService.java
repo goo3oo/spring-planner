@@ -7,7 +7,7 @@ import com.example.planner.user.dto.UserResponseDto;
 public interface UserService {
 
     UserResponseDto findUserById(Long id);
-    UserResponseDto updatePassword(Long id, UserUpdatePasswordRequestDto requestDto);
-    UserResponseDto updateUserName(Long id, UserUpdateUserIdRequestDto requestDto);
-    void deleteEmail(Long id);
+    UserResponseDto updatePassword(Long id, Long sessionUserId, UserUpdatePasswordRequestDto requestDto);
+    UserResponseDto updateUserName(Long id, Long sessionUserId, UserUpdateUserIdRequestDto requestDto);
+    void deleteEmail(Long id, Long sessionUserId);
 }

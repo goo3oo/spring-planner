@@ -34,14 +34,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentResponseDto postComment(CommentRequestDto requestDto, Long sessionUserId, Long planId) {
 
-        if(sessionUserId == null){
+        if (sessionUserId == null) {
             throw new AuthenticationException(AuthFailMessage.USER_LOGGED_OUT);
         }
         User user = userRepository.findById(sessionUserId)
-                .orElseThrow(()-> new AuthenticationException(AuthFailMessage.USER_NOT_FOUND));
+                .orElseThrow(() -> new AuthenticationException(AuthFailMessage.USER_NOT_FOUND));
 
         Plan plan = planRepository.findById(planId)
-                .orElseThrow(()-> new PlanNotFoundException(PlanFailMessage.PLAN_NOT_FOUND));
+                .orElseThrow(() -> new PlanNotFoundException(PlanFailMessage.PLAN_NOT_FOUND));
 
         Comment comment = requestDto.toEntity(user, plan);
 
@@ -77,6 +77,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public CommentResponseDto findCommentById(Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException(CommentFailMessage.COMMENT_NOT_FOUND));
@@ -84,18 +85,29 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void deleteComment(Long commentId) {
+    public CommentResponseDto updateComment(Long commentId, Long sessionUserId, CommentRequestDto requestDto) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException(CommentFailMessage.COMMENT_NOT_FOUND));
-        commentRepository.delete(comment);
-    }
 
-    @Override
-    public CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentNotFoundException(CommentFailMessage.COMMENT_NOT_FOUND));
+        if (!comment.getUser().getId().equals(sessionUserId)) {
+            throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_UPDATE_ACCESS);
+        }
+
         comment.updateComment(requestDto.getContent());
         return CommentMapper.toDto(comment);
     }
+
+    @Override
+    public void deleteComment(Long commentId, Long sessionUserId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException(CommentFailMessage.COMMENT_NOT_FOUND));
+
+        if (!comment.getUser().getId().equals(sessionUserId)) {
+            throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_DELETE_ACCESS);
+        }
+
+        commentRepository.delete(comment);
+    }
+
 }
 

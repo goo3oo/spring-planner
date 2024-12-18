@@ -1,5 +1,7 @@
 package com.example.planner.user.service;
 
+import com.example.planner.common.constant.AuthFailMessage;
+import com.example.planner.common.exception.AuthenticationException;
 import com.example.planner.user.constant.UserFailMessage;
 import com.example.planner.user.dto.UserUpdateUserIdRequestDto;
 import com.example.planner.user.dto.UserUpdatePasswordRequestDto;
@@ -30,25 +32,40 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserResponseDto updatePassword(Long id, UserUpdatePasswordRequestDto requestDto) {
+    public UserResponseDto updatePassword(Long id, Long sessionUserId, UserUpdatePasswordRequestDto requestDto) {
         User user = userRepository.findById(id)
                 .orElseThrow(()->new UserNotFoundException(UserFailMessage.USER_NOT_FOUND));
+
+        if (!user.getId().equals(sessionUserId)) {
+            throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_UPDATE_ACCESS);
+        }
+
         user.updatePassword(requestDto.getPassword());
         return UserMapper.toDto(user);
     }
 
     @Override
-    public UserResponseDto updateUserName(Long id, UserUpdateUserIdRequestDto requestDto) {
+    public UserResponseDto updateUserName(Long id, Long sessionUserId, UserUpdateUserIdRequestDto requestDto) {
         User user = userRepository.findById(id)
                 .orElseThrow(()->new UserNotFoundException(UserFailMessage.USER_NOT_FOUND));
+
+        if (!user.getId().equals(sessionUserId)) {
+            throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_UPDATE_ACCESS);
+        }
+
         user.updateUserName(requestDto.getUserName());
         return UserMapper.toDto(user);
     }
 
     @Override
-    public void deleteEmail(Long id) {
+    public void deleteEmail(Long id, Long sessionUserId) {
         User user = userRepository.findById(id)
                 .orElseThrow(()->new UserNotFoundException(UserFailMessage.USER_NOT_FOUND));
+
+        if (!user.getId().equals(sessionUserId)) {
+            throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_UPDATE_ACCESS);
+        }
+
         userRepository.delete(user);
     }
 }

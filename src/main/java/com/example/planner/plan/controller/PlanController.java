@@ -3,6 +3,7 @@ package com.example.planner.plan.controller;
 import com.example.planner.common.dto.ApiResponseDto;
 import com.example.planner.common.dto.ValidationResponseDto;
 import com.example.planner.common.exception.AuthenticationException;
+import com.example.planner.common.util.AuthSession;
 import com.example.planner.common.util.BindingResultUtils;
 import com.example.planner.plan.constant.PlanSuccessMessage;
 import com.example.planner.plan.dto.PlanListResponseDto;
@@ -77,31 +78,40 @@ public class PlanController {
     public ResponseEntity<?> updatePlan(
             @Valid @RequestBody PlanRequestDto requestDto,
             BindingResult bindingResult,
-            @PathVariable Long id) {
-
+            @PathVariable Long id,
+            @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
+    ) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ValidationResponseDto.fail(BindingResultUtils.extractErrorMessages(bindingResult)));
         }
         try {
-            PlanResponseDto responseDto = planService.updatePlan(id, requestDto);
+            PlanResponseDto responseDto = planService.updatePlan(id, sessionUserId, requestDto);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ApiResponseDto.success(PlanSuccessMessage.UPDATE_PLAN_SUCCESS.getMessage(), responseDto));
         } catch (PlanNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponseDto.fail(e.getMessage()));
+        }catch (AuthenticationException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponseDto.fail(e.getMessage()));
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ApiResponseDto<Void>> deletePlan(
-            @PathVariable Long id) {
+            @PathVariable Long id,
+            @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
+    ) {
         try {
-            planService.deletePlan(id);
+            planService.deletePlan(id, sessionUserId);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ApiResponseDto.success(PlanSuccessMessage.DELETE_PLAN_SUCCESS.getMessage()));
         }catch (PlanNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponseDto.fail(e.getMessage()));
+        }catch (AuthenticationException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponseDto.fail(e.getMessage()));
         }
     }

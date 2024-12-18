@@ -10,6 +10,6 @@ public interface PlanService {
     PlanResponseDto createPlan(PlanRequestDto requestDto, HttpSession session);
     List<PlanResponseDto> findAllPlan(String userId, String date);
     PlanResponseDto findPlanById(Long id);
-    PlanResponseDto updatePlan(Long id, PlanRequestDto requestDto);
-    void deletePlan(Long id);
+    PlanResponseDto updatePlan(Long id, Long sessionUserId, PlanRequestDto requestDto);
+    void deletePlan(Long id, Long sessionUserId);
 }

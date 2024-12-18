@@ -13,7 +13,6 @@ public interface CommentService {
     List<CommentResponseDto> findAllCommentByUserId(Long userId);
     List<CommentResponseDto> findAllCommentByPlanId(Long planId);
     CommentResponseDto findCommentById(Long commentId);
-    void deleteComment(Long commentId);
-
-    CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto);
+    CommentResponseDto updateComment(Long commentId, Long sessionUserId, CommentRequestDto requestDto);
+    void deleteComment(Long commentId, Long sessionUserId);
 }

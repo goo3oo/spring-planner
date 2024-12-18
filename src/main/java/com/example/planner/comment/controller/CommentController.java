@@ -10,6 +10,7 @@ import com.example.planner.comment.repository.CommentRepository;
 import com.example.planner.comment.service.CommentService;
 import com.example.planner.common.dto.ApiResponseDto;
 import com.example.planner.common.dto.ValidationResponseDto;
+import com.example.planner.common.exception.AuthenticationException;
 import com.example.planner.common.util.AuthSession;
 import com.example.planner.common.util.BindingResultUtils;
 import jakarta.validation.Valid;
@@ -95,33 +96,41 @@ public class CommentController {
     public ResponseEntity<?> updateComment(
             @PathVariable Long commentId,
             @Valid @RequestBody CommentRequestDto requestDto,
-            BindingResult bindingResult
+            BindingResult bindingResult,
+            @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
     ) {
         if (bindingResult.hasErrors()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ValidationResponseDto.fail(BindingResultUtils.extractErrorMessages(bindingResult)));
         }
         try{
-            CommentResponseDto responseDto = commentService.updateComment(commentId, requestDto);
+            CommentResponseDto responseDto = commentService.updateComment(commentId, sessionUserId, requestDto);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ApiResponseDto.success(CommentSuccessMessage.UPDATE_COMMENT_SUCCESS.getMessage(),responseDto));
 
         }catch (CommentNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ApiResponseDto.fail(e.getMessage()));
+        }catch (AuthenticationException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponseDto.fail(e.getMessage()));
         }
     }
 
     @DeleteMapping("/{commentId}")
     public ResponseEntity<ApiResponseDto<Void>> deleteComment(
-            @PathVariable Long commentId
+            @PathVariable Long commentId,
+            @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
     ) {
         try{
-            commentService.deleteComment(commentId);
+            commentService.deleteComment(commentId, sessionUserId);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ApiResponseDto.success(CommentSuccessMessage.DELETE_COMMENT_SUCCESS.getMessage()));
         }catch (CommentNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponseDto.fail(e.getMessage()));
+        }catch (AuthenticationException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponseDto.fail(e.getMessage()));
         }
     }

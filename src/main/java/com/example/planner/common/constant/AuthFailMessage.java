@@ -12,7 +12,9 @@ public enum AuthFailMessage {
     LOGIN_REQUIRED("로그인이 필요합니다."),
     NO_LOGIN_INFO("로그인 상태를 확인할 수 없습니다. 다시 로그인 해 주세요."),
     USER_NOT_FOUND("유효한 로그인 정보가 없습니다."),
-    USER_LOGGED_OUT("로그아웃 상태입니다.");
+    USER_LOGGED_OUT("로그아웃 상태입니다."),
+    UNAUTHORIZED_DELETE_ACCESS("삭제 권한이 없습니다"),
+    UNAUTHORIZED_UPDATE_ACCESS("수정 권한이 없습니다");
 
     private final String message;
 }
