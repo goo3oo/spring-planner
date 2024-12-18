@@ -6,16 +6,18 @@ import com.example.planner.auth.dto.LoginRequestDto;
 import com.example.planner.common.exception.AuthenticationException;
 import com.example.planner.auth.dto.SignupRequestDto;
 import com.example.planner.user.entity.User;
-import com.example.planner.user.reopository.UserRepository;
+import com.example.planner.user.repository.UserRepository;
 import com.example.planner.common.util.AuthSession;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-
+@Transactional
 public class AuthServiceImpl implements AuthService{
+
     private final UserRepository userRepository;
 
     @Override
@@ -27,26 +29,42 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public AuthResponseDto logIn(LoginRequestDto requestDto, HttpSession session) {
-        User user = userRepository.findByEmail(requestDto.getEmail())
-                .orElseThrow(()-> new AuthenticationException(AuthFailMessage.USER_NOT_FOUND));
+    public AuthResponseDto logIn(
+            LoginRequestDto requestDto,
+            HttpSession session
+    ) {
+        Long existingUserId = getExistingUserId(session);
+        if (existingUserId != null) {
+            AuthSession.invalidSession(session);
+        }
 
-        if(!user.getPassword().equals(requestDto.getPassword())){
+        User user = userRepository.findByEmail(requestDto.getEmail())
+                .orElseThrow(() -> new AuthenticationException(AuthFailMessage.EMAIL_NOT_FOUND));
+
+        if (!user.getPassword().equals(requestDto.getPassword())) {
             throw new AuthenticationException(AuthFailMessage.INVALID_PASSWORD);
         }
 
         AuthSession.setSession(session, user.getId());
+
         return new AuthResponseDto(user.getEmail(), user.getUserName());
     }
 
     @Override
     public AuthResponseDto logOut(HttpSession session) {
-        Long userId = AuthSession.getSession(session);
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(()->new AuthenticationException(AuthFailMessage.NO_LOGIN_INFO));
+        Long sessionUserId = getExistingUserId(session);
+        if(sessionUserId == null){
+            throw new AuthenticationException(AuthFailMessage.USER_LOGGED_OUT);
+        }
+        User user = userRepository.findById(sessionUserId)
+                .orElseThrow(()->new AuthenticationException(AuthFailMessage.USER_NOT_FOUND));
 
         AuthSession.invalidSession(session);
-        return new AuthResponseDto(user.getEmail(),user.getEmail());
+
+        return new AuthResponseDto(user.getEmail(),user.getUserName());
+    }
+
+    private Long getExistingUserId(HttpSession session){
+        return AuthSession.getSession(session);
     }
 }

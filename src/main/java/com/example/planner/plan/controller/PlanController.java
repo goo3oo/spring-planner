@@ -3,12 +3,10 @@ package com.example.planner.plan.controller;
 import com.example.planner.common.dto.ApiResponseDto;
 
 import com.example.planner.common.exception.AuthenticationException;
-import com.example.planner.plan.constant.PlanFailMessage;
 import com.example.planner.plan.constant.PlanSuccessMessage;
 import com.example.planner.plan.dto.PlanListResponseDto;
 import com.example.planner.plan.dto.PlanRequestDto;
 import com.example.planner.plan.dto.PlanResponseDto;
-import com.example.planner.plan.entity.Plan;
 import com.example.planner.plan.exception.PlanNotFoundException;
 import com.example.planner.plan.service.PlanService;
 import jakarta.servlet.http.HttpSession;
@@ -17,11 +15,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("/plans")
 @RequiredArgsConstructor
-
 public class PlanController {
 
     private final PlanService planService;

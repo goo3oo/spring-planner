@@ -9,15 +9,13 @@ import com.example.planner.plan.entity.Plan;
 import com.example.planner.plan.exception.PlanNotFoundException;
 import com.example.planner.user.entity.User;
 import com.example.planner.plan.repository.PlanRepository;
-import com.example.planner.user.reopository.UserRepository;
+import com.example.planner.user.repository.UserRepository;
 import com.example.planner.common.util.AuthSession;
 import com.example.planner.common.util.PlanMapper;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -68,11 +66,7 @@ public class PlanServiceImpl implements PlanService {
     @Transactional(readOnly = true)
     public PlanResponseDto findPlanById(Long id) {
         Plan plan = planRepository.findPlanById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-
-        if (plan == null) {
-            throw new PlanNotFoundException(PlanFailMessage.PLAN_NOT_FOUND);
-        }
+                .orElseThrow(() -> new PlanNotFoundException(PlanFailMessage.PLAN_NOT_FOUND));
 
         return PlanMapper.toDto(plan);
     }

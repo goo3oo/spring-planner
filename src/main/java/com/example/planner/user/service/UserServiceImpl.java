@@ -6,7 +6,7 @@ import com.example.planner.user.dto.UserUpdatePasswordRequestDto;
 import com.example.planner.user.dto.UserResponseDto;
 import com.example.planner.user.entity.User;
 import com.example.planner.user.exception.UserNotFoundException;
-import com.example.planner.user.reopository.UserRepository;
+import com.example.planner.user.repository.UserRepository;
 import com.example.planner.common.util.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -46,10 +46,9 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserResponseDto deleteEmail(Long id) {
+    public void deleteEmail(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(()->new UserNotFoundException(UserFailMessage.USER_NOT_FOUND));
         userRepository.delete(user);
-        return UserMapper.toDto(user);
     }
 }

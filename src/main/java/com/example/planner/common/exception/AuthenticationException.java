@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Getter
 public class AuthenticationException extends RuntimeException{
+
     private final AuthFailMessage failReason;
 
     public AuthenticationException(AuthFailMessage failReason){

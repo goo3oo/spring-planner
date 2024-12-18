@@ -63,7 +63,7 @@ public class UserController {
     public ResponseEntity<ApiResponseDto<Void>> deleteUser(
             @PathVariable Long id){
         try{
-            UserResponseDto responseDto = service.deleteEmail(id);
+            service.deleteEmail(id);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ApiResponseDto.success(UserSuccessMessage.USER_DELETE_SUCCESS.getMessage()));
         }catch (UserNotFoundException e){

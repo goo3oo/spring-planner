@@ -5,7 +5,6 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-
 public class ApiResponseDto<T> {
 
     private String message;
@@ -23,5 +22,4 @@ public class ApiResponseDto<T> {
     public static ApiResponseDto<Void> success(String message){
         return new ApiResponseDto<>(message, true, null);
     }
-
 }

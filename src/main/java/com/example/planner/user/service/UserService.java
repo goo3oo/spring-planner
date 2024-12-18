@@ -9,5 +9,5 @@ public interface UserService {
     UserResponseDto findUserById(Long id);
     UserResponseDto updatePassword(Long id, UserUpdatePasswordRequestDto requestDto);
     UserResponseDto updateUserId(Long id, UserUpdateUserIdRequestDto requestDto);
-    UserResponseDto deleteEmail(Long id);
+    void deleteEmail(Long id);
 }

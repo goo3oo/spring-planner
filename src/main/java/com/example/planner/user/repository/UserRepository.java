@@ -1,4 +1,4 @@
-package com.example.planner.user.reopository;
+package com.example.planner.user.repository;
 
 import com.example.planner.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

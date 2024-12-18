@@ -1,4 +1,4 @@
-package com.example.planner.config;
+package com.example.planner.common.config;
 
 import com.example.planner.common.filter.CustomFilter;
 import com.example.planner.common.filter.LoginFilter;

@@ -19,14 +19,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-
 public class AuthController {
+
     private final AuthService authService;
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponseDto<AuthResponseDto>> signUp(
-            @RequestBody SignupRequestDto requestDto) {
+            @RequestBody SignupRequestDto requestDto
+    ) {
         AuthResponseDto responseDto = authService.createUser(requestDto);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(ApiResponseDto.success(AuthSuccessMessage.SIGN_UP_SUCCESS.getMessage(), responseDto));
     }
@@ -34,7 +36,9 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<ApiResponseDto<AuthResponseDto>> logIn(
-            @RequestBody LoginRequestDto requestDto, HttpSession session) {
+            @RequestBody LoginRequestDto requestDto,
+            HttpSession session
+    ) {
         try {
             AuthResponseDto responseDto = authService.logIn(requestDto, session);
             return ResponseEntity.status(HttpStatus.OK)
@@ -46,10 +50,14 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<ApiResponseDto<AuthResponseDto>> logOut(HttpSession session){
-        AuthResponseDto responseDto = authService.logOut(session);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(ApiResponseDto.success(AuthSuccessMessage.LOGOUT_SUCCESS.getMessage(),responseDto));
+    public ResponseEntity<ApiResponseDto<AuthResponseDto>> logOut(HttpSession session) {
+        try{
+            AuthResponseDto responseDto = authService.logOut(session);
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(ApiResponseDto.success(AuthSuccessMessage.LOGOUT_SUCCESS.getMessage(),responseDto));
+        }catch (AuthenticationException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponseDto.fail(e.getMessage()));
+        }
     }
-    // 로그인상태가 아닌 경우
 }
