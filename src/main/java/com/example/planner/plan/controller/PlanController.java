@@ -1,8 +1,9 @@
 package com.example.planner.plan.controller;
 
 import com.example.planner.common.dto.ApiResponseDto;
-
+import com.example.planner.common.dto.ValidationResponseDto;
 import com.example.planner.common.exception.AuthenticationException;
+import com.example.planner.common.util.BindingResultUtils;
 import com.example.planner.plan.constant.PlanSuccessMessage;
 import com.example.planner.plan.dto.PlanListResponseDto;
 import com.example.planner.plan.dto.PlanRequestDto;
@@ -10,9 +11,11 @@ import com.example.planner.plan.dto.PlanResponseDto;
 import com.example.planner.plan.exception.PlanNotFoundException;
 import com.example.planner.plan.service.PlanService;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,9 +26,16 @@ public class PlanController {
     private final PlanService planService;
 
     @PostMapping
-    public ResponseEntity<ApiResponseDto<PlanResponseDto>> createPlan(
-            @RequestBody PlanRequestDto requestDto,
+    public ResponseEntity<?> createPlan(
+            @Valid @RequestBody PlanRequestDto requestDto,
+            BindingResult bindingResult,
             HttpSession session) {
+
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ValidationResponseDto.fail(BindingResultUtils.extractErrorMessages(bindingResult)));
+        }
+
         try {
             PlanResponseDto responseDto = planService.createPlan(requestDto, session);
             return ResponseEntity.status(HttpStatus.CREATED)
@@ -38,10 +48,10 @@ public class PlanController {
 
     @GetMapping
     public ResponseEntity<ApiResponseDto<PlanListResponseDto>> findAllPlan(
-            @RequestParam(required = false) String userId,
+            @RequestParam(required = false) String userName,
             @RequestParam(required = false) String date) {
         try {
-            PlanListResponseDto planListResponseDto = new PlanListResponseDto(planService.findAllPlan(userId, date));
+            PlanListResponseDto planListResponseDto = new PlanListResponseDto(planService.findAllPlan(userName, date));
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ApiResponseDto.success(PlanSuccessMessage.FIND_PLAN_SUCCESS.getMessage(), planListResponseDto));
         } catch (PlanNotFoundException e) {
@@ -64,9 +74,15 @@ public class PlanController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<ApiResponseDto<PlanResponseDto>> updatePlan(
-            @RequestBody PlanRequestDto requestDto,
+    public ResponseEntity<?> updatePlan(
+            @Valid @RequestBody PlanRequestDto requestDto,
+            BindingResult bindingResult,
             @PathVariable Long id) {
+
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ValidationResponseDto.fail(BindingResultUtils.extractErrorMessages(bindingResult)));
+        }
         try {
             PlanResponseDto responseDto = planService.updatePlan(id, requestDto);
             return ResponseEntity.status(HttpStatus.OK)

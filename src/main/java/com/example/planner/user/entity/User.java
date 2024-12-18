@@ -22,15 +22,12 @@ public class User extends BaseEntity {
 
     @Email
     @Column(nullable = false, unique = true)
-    @NotBlank(message = "이메일 주소를 입력해주세요.")
     private String email;
 
     @Column(nullable = false, unique = true)
-    @NotBlank(message = "사용자 이름을 입력해주세요.")
     private String userName;
 
     @Column(nullable = false)
-    @NotBlank(message = "비밀번호를 입력해주세요.")
     private String password;
 
     public User(String email, String userName, String password){

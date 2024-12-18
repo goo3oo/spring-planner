@@ -37,7 +37,7 @@ public class PlanServiceImpl implements PlanService {
         Long userUniqueId = AuthSession.getSession(session);
         User user = userRepository.findById(userUniqueId)
                 .orElseThrow(() -> new AuthenticationException(AuthFailMessage.NO_LOGIN_INFO));
-        Plan plan = requestDto.dtoToEntity(user);
+        Plan plan = requestDto.toEntity(user);
 
         planRepository.save(plan);
 

@@ -9,8 +9,8 @@ import lombok.NoArgsConstructor;
 public class UserMapper {
     public static UserResponseDto toDto(User user){
         return new UserResponseDto(
-                user.getUserName(),
                 user.getEmail(),
+                user.getUserName(),
                 user.getCreatedAt(),
                 user.getUpdatedAt()
         );

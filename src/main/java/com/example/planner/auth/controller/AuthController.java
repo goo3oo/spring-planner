@@ -2,15 +2,19 @@ package com.example.planner.auth.controller;
 
 import com.example.planner.auth.dto.AuthResponseDto;
 import com.example.planner.common.constant.AuthSuccessMessage;
+import com.example.planner.common.dto.ValidationResponseDto;
 import com.example.planner.common.exception.AuthenticationException;
 import com.example.planner.common.dto.ApiResponseDto;
 import com.example.planner.auth.dto.LoginRequestDto;
 import com.example.planner.auth.dto.SignupRequestDto;
 import com.example.planner.auth.service.AuthService;
+import com.example.planner.common.util.BindingResultUtils;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,9 +28,15 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponseDto<AuthResponseDto>> signUp(
-            @RequestBody SignupRequestDto requestDto
+    public ResponseEntity<?> signUp(
+            @Valid @RequestBody SignupRequestDto requestDto,
+            BindingResult bindingResult
     ) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ValidationResponseDto.fail(BindingResultUtils.extractErrorMessages(bindingResult)));
+        }
+
         AuthResponseDto responseDto = authService.createUser(requestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -35,15 +45,21 @@ public class AuthController {
     // 같은 메일주소가 존재하는 경우
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponseDto<AuthResponseDto>> logIn(
-            @RequestBody LoginRequestDto requestDto,
+    public ResponseEntity<?> logIn(
+            @Valid @RequestBody LoginRequestDto requestDto,
+            BindingResult bindingResult,
             HttpSession session
     ) {
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ValidationResponseDto.fail(BindingResultUtils.extractErrorMessages(bindingResult)));
+        }
+
         try {
             AuthResponseDto responseDto = authService.logIn(requestDto, session);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ApiResponseDto.success(AuthSuccessMessage.LOGIN_SUCCESS.getMessage(), responseDto));
-        }catch (AuthenticationException e){
+        } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponseDto.fail(e.getMessage()));
         }
@@ -51,11 +67,11 @@ public class AuthController {
 
     @PostMapping("/logout")
     public ResponseEntity<ApiResponseDto<AuthResponseDto>> logOut(HttpSession session) {
-        try{
+        try {
             AuthResponseDto responseDto = authService.logOut(session);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponseDto.success(AuthSuccessMessage.LOGOUT_SUCCESS.getMessage(),responseDto));
-        }catch (AuthenticationException e){
+                    .body(ApiResponseDto.success(AuthSuccessMessage.LOGOUT_SUCCESS.getMessage(), responseDto));
+        } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ApiResponseDto.fail(e.getMessage()));
         }

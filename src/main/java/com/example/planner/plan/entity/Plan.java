@@ -24,7 +24,6 @@ public class Plan extends BaseEntity {
     private Long id;
 
     @Column(nullable = false)
-    @NotBlank(message = "제목을 입력해주세요.")
     private String title;
 
     @Column(nullable = false)

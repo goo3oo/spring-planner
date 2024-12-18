@@ -1,22 +1,26 @@
 package com.example.planner.user.controller;
 
 import com.example.planner.common.dto.ApiResponseDto;
+import com.example.planner.common.dto.ValidationResponseDto;
+import com.example.planner.common.util.BindingResultUtils;
 import com.example.planner.user.constant.UserSuccessMessage;
 import com.example.planner.user.dto.UserResponseDto;
 import com.example.planner.user.exception.UserNotFoundException;
 import com.example.planner.user.service.UserService;
 import com.example.planner.user.dto.UserUpdateUserIdRequestDto;
 import com.example.planner.user.dto.UserUpdatePasswordRequestDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor
-
 public class UserController {
+
     private final UserService service;
 
     @GetMapping("/{id}")
@@ -32,9 +36,16 @@ public class UserController {
     }
 
     @PatchMapping("/{id}/password")
-    public ResponseEntity<ApiResponseDto<UserResponseDto>> updatePassword(
-            @RequestBody UserUpdatePasswordRequestDto requestDto,
+    public ResponseEntity<?> updatePassword(
+            @Valid  @RequestBody UserUpdatePasswordRequestDto requestDto,
+            BindingResult bindingResult,
             @PathVariable Long id){
+
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ValidationResponseDto.fail(BindingResultUtils.extractErrorMessages(bindingResult)));
+        }
+
         try{
             UserResponseDto responseDto = service.updatePassword(id, requestDto);
             return ResponseEntity.status(HttpStatus.OK)
@@ -46,9 +57,16 @@ public class UserController {
     }
 
     @PatchMapping("/{id}/userName")
-    public ResponseEntity<ApiResponseDto<UserResponseDto>> updateUserName(
-            @RequestBody UserUpdateUserIdRequestDto requestDto,
+    public ResponseEntity<?> updateUserName(
+            @Valid @RequestBody UserUpdateUserIdRequestDto requestDto,
+            BindingResult bindingResult,
             @PathVariable Long id){
+
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ValidationResponseDto.fail(BindingResultUtils.extractErrorMessages(bindingResult)));
+        }
+
         try{
             UserResponseDto responseDto = service.updateUserName(id, requestDto);
             return ResponseEntity.status(HttpStatus.OK)
