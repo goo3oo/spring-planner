@@ -1,8 +1,10 @@
 package com.example.planner.comment.controller;
 
 import com.example.planner.comment.constant.CommentSuccessMessage;
+import com.example.planner.comment.dto.CommentListResponseDto;
 import com.example.planner.comment.dto.CommentRequestDto;
 import com.example.planner.comment.dto.CommentResponseDto;
+import com.example.planner.comment.exception.CommentNotFoundException;
 import com.example.planner.comment.service.CommentService;
 import com.example.planner.common.dto.ApiResponseDto;
 import com.example.planner.common.dto.ValidationResponseDto;
@@ -43,5 +45,31 @@ public class CommentController {
         }
     }
 
+    @GetMapping("users/{userId}")
+    public ResponseEntity<ApiResponseDto<CommentListResponseDto>> findAllCommentByUserId(
+            @PathVariable Long userId
+    ) {
+        try {
+            CommentListResponseDto responseDto = new CommentListResponseDto(commentService.findAllCommentByUserId(userId));
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(ApiResponseDto.success(CommentSuccessMessage.FIND_ALL_COMMENTS_BY_USER_SUCCESS.getMessage(),responseDto));
+        }catch (CommentNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponseDto.fail(e.getMessage()));
+        }
+    }
 
+    @GetMapping("plans/{planId}")
+    public ResponseEntity<ApiResponseDto<CommentListResponseDto>> findAllCommentByPlanId(
+            @PathVariable Long planId
+    ) {
+        try{
+            CommentListResponseDto responseDto = new CommentListResponseDto(commentService.findAllCommentByPlanId(planId));
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(ApiResponseDto.success(CommentSuccessMessage.FIND_ALL_COMMENTS_BY_PLAN_SUCCESS.getMessage(),responseDto));
+        }catch (CommentNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponseDto.fail(e.getMessage()));
+        }
+    }
 }
