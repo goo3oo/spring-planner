@@ -91,7 +91,7 @@ public class CommentController {
         }
     }
 
-    @DeleteMapping("/{commentId}")
+    @PatchMapping("/{commentId}")
     public ResponseEntity<?> updateComment(
             @PathVariable Long commentId,
             @Valid @RequestBody CommentRequestDto requestDto,
@@ -102,13 +102,13 @@ public class CommentController {
                     .body(ValidationResponseDto.fail(BindingResultUtils.extractErrorMessages(bindingResult)));
         }
         try{
-            CommentResponseDto responseDto = commentService.updateComment(commentId);
+            CommentResponseDto responseDto = commentService.updateComment(commentId, requestDto);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ApiResponseDto.success(CommentSuccessMessage.UPDATE_COMMENT_SUCCESS.getMessage(),responseDto));
 
-        }catch (CommandAcceptanceException e){
+        }catch (CommentNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ApiResponseDto.fail(CommentFailMessage.COMMENT_NOT_FOUND.getMessage()));
+                    .body(ApiResponseDto.fail(e.getMessage()));
         }
     }
 

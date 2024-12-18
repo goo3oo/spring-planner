@@ -91,10 +91,11 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentResponseDto updateComment(Long commentId) {
+    public CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException(CommentFailMessage.COMMENT_NOT_FOUND));
-        comment.
+        comment.updateComment(requestDto.getContent());
+        return CommentMapper.toDto(comment);
     }
 }
 

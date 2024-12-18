@@ -15,5 +15,5 @@ public interface CommentService {
     CommentResponseDto findCommentById(Long commentId);
     void deleteComment(Long commentId);
 
-    CommentResponseDto updateComment(Long commentId);
+    CommentResponseDto updateComment(Long commentId, CommentRequestDto requestDto);
 }
