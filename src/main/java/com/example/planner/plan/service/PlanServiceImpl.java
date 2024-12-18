@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-
 @Transactional
 public class PlanServiceImpl implements PlanService {
 

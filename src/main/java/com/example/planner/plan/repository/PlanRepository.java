@@ -13,7 +13,8 @@ import java.util.Optional;
 public interface PlanRepository extends JpaRepository<Plan, Long> {
 
     @EntityGraph(attributePaths = {"user"})
-    @Query("SELECT p FROM Plan p WHERE (:userName IS NULL OR p.user.userName = :userName) " +
+    @Query("SELECT p FROM Plan p LEFT JOIN p.user u " +
+            "WHERE (:userName IS NULL OR p.user.userName = :userName) " +
             "AND (:updatedAt IS NULL OR p.updatedAt = :updatedAt)")
     List<Plan> findByAuthorAndUpdatedAt(@Param("userName") String userName,
                                         @Param("updatedAt") LocalDate updatedAt);

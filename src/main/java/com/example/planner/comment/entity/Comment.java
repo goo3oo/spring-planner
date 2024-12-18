@@ -1,6 +1,7 @@
-package com.example.planner.plan.entity;
+package com.example.planner.comment.entity;
 
 import com.example.planner.common.entity.BaseEntity;
+import com.example.planner.plan.entity.Plan;
 import com.example.planner.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,35 +11,32 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 @Entity
-@AllArgsConstructor
-@Table(name = "plan")
-@NoArgsConstructor
+@Table(name = "comment")
 @Getter
-public class Plan extends BaseEntity {
+@AllArgsConstructor
+@NoArgsConstructor
+public class Comment extends BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = true)
     @OnDelete(action = OnDeleteAction.SET_NULL)
     private User user;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
-    private String title;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "plan_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Plan plan;
 
     @Column(nullable = false)
     private String content;
 
-    public Plan(User user, String title, String content){
+    public Comment(User user, Plan plan, String content){
         this.user = user;
-        this.title = title;
-        this.content = content;
-    }
-
-    public void updatePlan(String title, String content) {
-        this.title = title;
+        this.plan = plan;
         this.content = content;
     }
 }
