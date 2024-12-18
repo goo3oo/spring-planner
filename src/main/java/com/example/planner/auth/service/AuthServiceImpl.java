@@ -27,6 +27,9 @@ public class AuthServiceImpl implements AuthService{
         String EncodedPassword = passwordEncoder.encode(requestDto.getPassword());
 
         User user = requestDto.toEntity(EncodedPassword);
+        if(userRepository.existsByEmail(requestDto.getEmail())){
+            throw new AuthenticationException(AuthFailMessage.DUPLICATE_EMAIL);
+        }
 
         userRepository.save(user);
         return new AuthResponseDto(user.getEmail(), user.getUserName());

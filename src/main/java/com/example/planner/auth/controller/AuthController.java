@@ -36,13 +36,16 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(ValidationResponseDto.fail(BindingResultUtils.extractErrorMessages(bindingResult)));
         }
+        try{
+            AuthResponseDto responseDto = authService.createUser(requestDto);
 
-        AuthResponseDto responseDto = authService.createUser(requestDto);
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(ApiResponseDto.success(AuthSuccessMessage.SIGN_UP_SUCCESS.getMessage(), responseDto));
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(ApiResponseDto.success(AuthSuccessMessage.SIGN_UP_SUCCESS.getMessage(), responseDto));
+        }catch (AuthenticationException e){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponseDto.fail(e.getMessage()));
+        }
     }
-    // 같은 메일주소가 존재하는 경우
 
     @PostMapping("/login")
     public ResponseEntity<?> logIn(
