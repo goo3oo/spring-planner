@@ -1,7 +1,6 @@
 package com.example.planner.comment.service;
 
 import com.example.planner.comment.constant.CommentFailMessage;
-import com.example.planner.comment.dto.CommentListResponseDto;
 import com.example.planner.comment.dto.CommentRequestDto;
 import com.example.planner.comment.dto.CommentResponseDto;
 import com.example.planner.comment.entity.Comment;
@@ -10,7 +9,6 @@ import com.example.planner.comment.repository.CommentRepository;
 import com.example.planner.common.constant.AuthFailMessage;
 import com.example.planner.common.exception.AuthenticationException;
 import com.example.planner.common.util.CommentMapper;
-import com.example.planner.common.util.PlanMapper;
 import com.example.planner.plan.constant.PlanFailMessage;
 import com.example.planner.plan.entity.Plan;
 import com.example.planner.plan.exception.PlanNotFoundException;
@@ -19,12 +17,14 @@ import com.example.planner.user.entity.User;
 import com.example.planner.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CommentServiceImpl implements CommentService {
 
     private final PlanRepository planRepository;
@@ -51,6 +51,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CommentResponseDto> findAllCommentByUserId(Long userId) {
         List<Comment> comments = commentRepository.findAllByUser_Id(userId);
 
@@ -63,6 +64,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CommentResponseDto> findAllCommentByPlanId(Long planId) {
         List<Comment> comments = commentRepository.findAllByPlan_Id(planId);
 
@@ -74,5 +76,25 @@ public class CommentServiceImpl implements CommentService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public CommentResponseDto findCommentById(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException(CommentFailMessage.COMMENT_NOT_FOUND));
+        return CommentMapper.toDto(comment);
+    }
+
+    @Override
+    public void deleteComment(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException(CommentFailMessage.COMMENT_NOT_FOUND));
+        commentRepository.delete(comment);
+    }
+
+    @Override
+    public CommentResponseDto updateComment(Long commentId) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new CommentNotFoundException(CommentFailMessage.COMMENT_NOT_FOUND));
+        comment.
+    }
 }
 

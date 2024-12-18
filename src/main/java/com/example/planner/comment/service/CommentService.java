@@ -12,4 +12,8 @@ public interface CommentService {
     CommentResponseDto postComment(CommentRequestDto requestDto, Long sessionUserId, Long planId);
     List<CommentResponseDto> findAllCommentByUserId(Long userId);
     List<CommentResponseDto> findAllCommentByPlanId(Long planId);
+    CommentResponseDto findCommentById(Long commentId);
+    void deleteComment(Long commentId);
+
+    CommentResponseDto updateComment(Long commentId);
 }
