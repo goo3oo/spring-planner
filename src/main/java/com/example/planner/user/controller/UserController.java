@@ -38,21 +38,21 @@ public class UserController {
         try{
             UserResponseDto responseDto = service.updatePassword(id, requestDto);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponseDto.success(UserSuccessMessage.USERNAME_UPDATE_SUCCESS.getMessage(),responseDto));
+                    .body(ApiResponseDto.success(UserSuccessMessage.PASSWORD_UPDATE_SUCCESS.getMessage(),responseDto));
         }catch (UserNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ApiResponseDto.fail(e.getMessage()));
         }
     }
 
-    @PatchMapping("/{id}/userId")
-    public ResponseEntity<ApiResponseDto<UserResponseDto>> updateUserId(
+    @PatchMapping("/{id}/userName")
+    public ResponseEntity<ApiResponseDto<UserResponseDto>> updateUserName(
             @RequestBody UserUpdateUserIdRequestDto requestDto,
             @PathVariable Long id){
         try{
-            UserResponseDto responseDto = service.updateUserId(id, requestDto);
+            UserResponseDto responseDto = service.updateUserName(id, requestDto);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponseDto.success(UserSuccessMessage.PASSWORD_UPDATE_SUCCESS.getMessage(),responseDto));
+                    .body(ApiResponseDto.success(UserSuccessMessage.USERNAME_UPDATE_SUCCESS.getMessage(),responseDto));
         }catch (UserNotFoundException e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ApiResponseDto.fail(e.getMessage()));
