@@ -12,6 +12,8 @@ import com.example.planner.common.dto.ValidationResponseDto;
 import com.example.planner.common.exception.AuthenticationException;
 import com.example.planner.common.util.AuthSession;
 import com.example.planner.common.util.BindingResultUtils;
+import com.example.planner.plan.exception.PlanNotFoundException;
+import com.example.planner.user.exception.UserNotFoundException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,7 +43,10 @@ public class CommentController {
             CommentResponseDto responseDto = commentService.postComment(requestDto, sessionUserId, planId);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(ApiResponseDto.success(CommentSuccessMessage.POST_COMMENT_SUCCESS.getMessage(), responseDto));
-        } catch (Exception e) {
+        } catch (AuthenticationException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(ApiResponseDto.fail(e.getMessage()));
+        } catch (PlanNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ApiResponseDto.fail(e.getMessage()));
         }
@@ -55,32 +60,35 @@ public class CommentController {
             CommentListResponseDto responseDto = new CommentListResponseDto(commentService.findAllCommentByUserId(userId));
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ApiResponseDto.success(CommentSuccessMessage.FIND_ALL_COMMENTS_BY_USER_SUCCESS.getMessage(), responseDto));
+        } catch (UserNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponseDto.fail(e.getMessage()));
         } catch (CommentNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ApiResponseDto.fail(e.getMessage()));
         }
     }
 
-    @GetMapping("plans/{commentId}")
+    @GetMapping("plans/{planId}")
     public ResponseEntity<ApiResponseDto<CommentListResponseDto>> findAllCommentByPlanId(
+            @PathVariable Long planId
+    ) {
+        try {
+            CommentListResponseDto responseDto = new CommentListResponseDto(commentService.findAllCommentByPlanId(planId));
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(ApiResponseDto.success(CommentSuccessMessage.FIND_ALL_COMMENTS_BY_PLAN_SUCCESS.getMessage(), responseDto));
+        } catch (PlanNotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponseDto.fail(e.getMessage()));
+        }
+    }
+
+    @GetMapping("/{commentId}")
+    public ResponseEntity<ApiResponseDto<CommentResponseDto>> findCommentById(
             @PathVariable Long commentId
     ) {
         try {
-            CommentListResponseDto responseDto = new CommentListResponseDto(commentService.findAllCommentByPlanId(commentId));
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponseDto.success(CommentSuccessMessage.FIND_ALL_COMMENTS_BY_PLAN_SUCCESS.getMessage(), responseDto));
-        } catch (CommentNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ApiResponseDto.fail(e.getMessage()));
-        }
-    }
-
-    @GetMapping("/{userId}")
-    public ResponseEntity<ApiResponseDto<CommentResponseDto>> findCommentById(
-            @PathVariable Long userId
-    ) {
-        try {
-            CommentResponseDto responseDto = commentService.findCommentById(userId);
+            CommentResponseDto responseDto = commentService.findCommentById(commentId);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ApiResponseDto.success(CommentSuccessMessage.FIND_COMMENT_BY_COMMENT_SUCCESS.getMessage(), responseDto));
         } catch (CommentNotFoundException e) {
