@@ -50,7 +50,7 @@ public class UserServiceImpl implements UserService{
         User user = userRepository.findById(id)
                 .orElseThrow(()->new UserNotFoundException(UserFailMessage.USER_NOT_FOUND));
 
-        if (!user.getId().equals(sessionUserId)) {
+        if (!user.getUserId().equals(sessionUserId)) {
             throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_UPDATE_ACCESS);
         }
 
@@ -60,10 +60,14 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserResponseDto updateUserName(Long id, Long sessionUserId, UserUpdateUserIdRequestDto requestDto) {
+       if(!id.equals(sessionUserId)){
+            throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_UPDATE_ACCESS);
+       }
+
         User user = userRepository.findById(id)
                 .orElseThrow(()->new UserNotFoundException(UserFailMessage.USER_NOT_FOUND));
 
-        if (!user.getId().equals(sessionUserId)) {
+        if (!user.getUserId().equals(sessionUserId)) {
             throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_UPDATE_ACCESS);
         }
 
@@ -76,7 +80,7 @@ public class UserServiceImpl implements UserService{
         User user = userRepository.findById(id)
                 .orElseThrow(()->new UserNotFoundException(UserFailMessage.USER_NOT_FOUND));
 
-        if (!user.getId().equals(sessionUserId)) {
+        if (!user.getUserId().equals(sessionUserId)) {
             throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_UPDATE_ACCESS);
         }
 

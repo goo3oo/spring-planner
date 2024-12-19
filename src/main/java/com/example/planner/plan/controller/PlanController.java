@@ -14,10 +14,13 @@ import com.example.planner.plan.service.PlanService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/plans")
@@ -48,10 +51,10 @@ public class PlanController {
 
     @GetMapping
     public ResponseEntity<ApiResponseDto<PlanListResponseDto>> findAllPlan(
-            @RequestParam(required = false) String userName,
-            @RequestParam(required = false) String date) {
+            @RequestParam(required = false) Long userId,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         try {
-            PlanListResponseDto planListResponseDto = new PlanListResponseDto(planService.findAllPlan(userName, date));
+            PlanListResponseDto planListResponseDto = new PlanListResponseDto(planService.findAllPlan(userId, date));
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ApiResponseDto.success(PlanSuccessMessage.FIND_PLAN_SUCCESS.getMessage(), planListResponseDto));
         } catch (PlanNotFoundException e) {
@@ -60,11 +63,11 @@ public class PlanController {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{planId}")
     public ResponseEntity<ApiResponseDto<PlanResponseDto>> findPlanById(
-            @PathVariable Long id) {
+            @PathVariable Long planId) {
         try {
-            PlanResponseDto responseDto = planService.findPlanById(id);
+            PlanResponseDto responseDto = planService.findPlanById(planId);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ApiResponseDto.success(PlanSuccessMessage.FIND_PLAN_SUCCESS.getMessage(), responseDto));
         } catch (PlanNotFoundException e) {
@@ -73,11 +76,11 @@ public class PlanController {
         }
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{planId}")
     public ResponseEntity<?> updatePlan(
             @Valid @RequestBody PlanRequestDto requestDto,
             BindingResult bindingResult,
-            @PathVariable Long id,
+            @PathVariable Long planId,
             @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
     ) {
         if (bindingResult.hasErrors()) {
@@ -85,7 +88,7 @@ public class PlanController {
                     .body(ValidationResponseDto.fail(BindingResultUtils.extractErrorMessages(bindingResult)));
         }
         try {
-            PlanResponseDto responseDto = planService.updatePlan(id, sessionUserId, requestDto);
+            PlanResponseDto responseDto = planService.updatePlan(planId, sessionUserId, requestDto);
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ApiResponseDto.success(PlanSuccessMessage.UPDATE_PLAN_SUCCESS.getMessage(), responseDto));
         } catch (PlanNotFoundException e) {

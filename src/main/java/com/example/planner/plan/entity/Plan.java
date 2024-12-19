@@ -22,7 +22,7 @@ public class Plan extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long planId;
 
     @Column(nullable = false)
     private String title;

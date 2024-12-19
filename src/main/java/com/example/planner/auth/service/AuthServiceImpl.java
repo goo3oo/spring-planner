@@ -50,7 +50,7 @@ public class AuthServiceImpl implements AuthService{
         if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
             throw new AuthenticationException(AuthFailMessage.INVALID_PASSWORD);
         }
-        AuthSession.setSession(session, user.getId());
+        AuthSession.setSession(session, user.getUserId());
         return new AuthResponseDto(user.getEmail(), user.getUserName());
     }
 

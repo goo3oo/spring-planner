@@ -8,10 +8,10 @@
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public class PlanMapper {
         public static PlanResponseDto toDto(Plan plan){
-            String userName = (plan.getUser() != null) ? plan.getUser().getUserName() : "사용자 삭제됨";
+
             return new PlanResponseDto(
-                    plan.getId(),
-                    userName,
+                    plan.getPlanId(),
+                    plan.getUser().getUserName(),
                     plan.getTitle(),
                     plan.getContent(),
                     plan.getCreatedAt(),
