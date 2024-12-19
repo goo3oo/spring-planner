@@ -1,6 +1,9 @@
 package com.example.planner.plan.service;
 
+import com.example.planner.comment.service.CommentServiceImpl;
 import com.example.planner.common.constant.AuthFailMessage;
+import com.example.planner.common.dto.PageResponseDto;
+import com.example.planner.common.dto.PagingDto;
 import com.example.planner.common.exception.AuthenticationException;
 import com.example.planner.plan.constant.PlanFailMessage;
 import com.example.planner.plan.dto.PlanRequestDto;
@@ -14,6 +17,8 @@ import com.example.planner.common.util.AuthSession;
 import com.example.planner.common.util.PlanMapper;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +32,7 @@ import java.util.stream.Collectors;
 public class PlanServiceImpl implements PlanService {
     private final PlanRepository planRepository;
     private final UserRepository userRepository;
+    private final CommentServiceImpl commentService;
 
     @Override
     public PlanResponseDto createPlan(PlanRequestDto requestDto, HttpSession session) {
@@ -37,22 +43,29 @@ public class PlanServiceImpl implements PlanService {
 
         planRepository.save(plan);
 
-        return PlanMapper.toDto(plan);
+        return PlanMapper.toDto(plan, commentService.getCommentCountByPlanId(plan.getPlanId()));
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<PlanResponseDto> findAllPlan(Long userId, LocalDate date) {
+    public PageResponseDto findAllPlan(Long userId, LocalDate date, Pageable pageable) {
 
-        List<Plan> plans = planRepository.findByAuthorAndUpdatedAt(userId, date);
+        Page<Plan> plans = planRepository.findByUserIdAndUpdatedAt(userId, date, pageable);
 
         if (plans.isEmpty()) {
             throw new PlanNotFoundException(PlanFailMessage.PLAN_NOT_FOUND);
         }
 
-        return plans.stream()
-                .map(PlanMapper::toDto)
-                .collect(Collectors.toList());
+        Page<PlanResponseDto> dtoPage = plans.map(plan -> {
+            int commentCount = commentService.getCommentCountByPlanId(plan.getPlanId());
+            return PlanMapper.toDto(plan, commentCount);
+        });
+
+        PagingDto pagingDto = PlanMapper.toDto(plans);
+
+        List<PlanResponseDto> dtoList = dtoPage.getContent();
+
+        return new PageResponseDto(pagingDto, dtoList);
     }
 
     @Override
@@ -61,7 +74,7 @@ public class PlanServiceImpl implements PlanService {
         Plan plan = planRepository.findPlanByPlanId(planId)
                 .orElseThrow(() -> new PlanNotFoundException(PlanFailMessage.PLAN_NOT_FOUND));
 
-        return PlanMapper.toDto(plan);
+        return PlanMapper.toDto(plan, commentService.getCommentCountByPlanId(plan.getPlanId()));
     }
 
     @Override
@@ -74,7 +87,7 @@ public class PlanServiceImpl implements PlanService {
         }
 
         plan.updatePlan(requestDto.getTitle(), requestDto.getContent());
-        return PlanMapper.toDto(plan);
+        return PlanMapper.toDto(plan, commentService.getCommentCountByPlanId(plan.getPlanId()));
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.example.planner.plan.controller;
 
 import com.example.planner.common.dto.ApiResponseDto;
+import com.example.planner.common.dto.PageResponseDto;
 import com.example.planner.common.dto.ValidationResponseDto;
 import com.example.planner.common.exception.AuthenticationException;
 import com.example.planner.common.util.AuthSession;
@@ -14,6 +15,9 @@ import com.example.planner.plan.service.PlanService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,13 +54,15 @@ public class PlanController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponseDto<PlanListResponseDto>> findAllPlan(
+    public ResponseEntity<ApiResponseDto<PageResponseDto>> findAllPlan(
             @RequestParam(required = false) Long userId,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+            @PageableDefault(size = 10, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable){
         try {
-            PlanListResponseDto planListResponseDto = new PlanListResponseDto(planService.findAllPlan(userId, date));
+            PageResponseDto pageResponseDto = planService.findAllPlan(userId, date, pageable);
+
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponseDto.success(PlanSuccessMessage.FIND_PLAN_SUCCESS.getMessage(), planListResponseDto));
+                    .body(ApiResponseDto.success(PlanSuccessMessage.FIND_PLAN_SUCCESS.getMessage(), pageResponseDto));
         } catch (PlanNotFoundException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(ApiResponseDto.fail(e.getMessage()));
@@ -65,7 +71,8 @@ public class PlanController {
 
     @GetMapping("/{planId}")
     public ResponseEntity<ApiResponseDto<PlanResponseDto>> findPlanById(
-            @PathVariable Long planId) {
+            @PathVariable Long planId
+    ) {
         try {
             PlanResponseDto responseDto = planService.findPlanById(planId);
             return ResponseEntity.status(HttpStatus.OK)

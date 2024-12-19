@@ -2,6 +2,7 @@ package com.example.planner.plan.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -9,5 +10,5 @@ import java.util.List;
 @AllArgsConstructor
 
 public class PlanListResponseDto {
-    private List<PlanResponseDto> plans;
+    private Page<PlanResponseDto> plans;
 }

@@ -117,5 +117,8 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.delete(comment);
     }
 
+    public int getCommentCountByPlanId(Long planId) {
+        return commentRepository.countByPlan_PlanId(planId);
+    }
 }
 

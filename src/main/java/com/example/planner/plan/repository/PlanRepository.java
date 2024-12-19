@@ -1,6 +1,8 @@
 package com.example.planner.plan.repository;
 
 import com.example.planner.plan.entity.Plan;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -15,9 +17,10 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
     @EntityGraph(attributePaths = {"user"})
     @Query("SELECT p FROM Plan p WHERE (:userId IS NULL OR p.user.userId = :userId) " +
             "AND (:date IS NULL OR FUNCTION('DATE', p.updatedAt) = :date)")
-    List<Plan> findByAuthorAndUpdatedAt(@Param("userId") Long userId,
-                                        @Param("date") LocalDate date);
+    Page<Plan> findByUserIdAndUpdatedAt(@Param("userId") Long userId,
+                                        @Param("date") LocalDate date,
+                                        Pageable pageable);
 
     @EntityGraph(attributePaths = {"user"})
-    Optional<Plan> findPlanByPlanId(Long planId);
+    Plan<Plan> findPlanByPlanId(Long planId);
 }
