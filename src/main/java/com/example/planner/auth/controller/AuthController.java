@@ -42,7 +42,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(ApiResponseDto.success(AuthSuccessMessage.SIGN_UP_SUCCESS.getMessage(), responseDto));
         }catch (AuthenticationException e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+            return ResponseEntity.status(HttpStatus.CONFLICT)
                     .body(ApiResponseDto.fail(e.getMessage()));
         }
     }
@@ -74,7 +74,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.OK)
                     .body(ApiResponseDto.success(AuthSuccessMessage.LOGOUT_SUCCESS.getMessage(), responseDto));
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body(ApiResponseDto.fail(e.getMessage()));
         }
     }
