@@ -13,7 +13,9 @@ import com.example.planner.plan.constant.PlanFailMessage;
 import com.example.planner.plan.entity.Plan;
 import com.example.planner.plan.exception.PlanNotFoundException;
 import com.example.planner.plan.repository.PlanRepository;
+import com.example.planner.user.constant.UserFailMessage;
 import com.example.planner.user.entity.User;
+import com.example.planner.user.exception.UserNotFoundException;
 import com.example.planner.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -54,7 +56,11 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public List<CommentResponseDto> findAllCommentByUserId(Long userId) {
-        List<Comment> comments = commentRepository.findAllByUser_Id(userId);
+        if (!userRepository.existsById(userId)) {
+            throw new UserNotFoundException(UserFailMessage.USER_NOT_FOUND);
+        }
+
+        List<Comment> comments = commentRepository.findAllByUser_UserId(userId);
 
         if (comments.isEmpty()) {
             throw new CommentNotFoundException(CommentFailMessage.COMMENT_NOT_FOUND);
@@ -67,10 +73,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public List<CommentResponseDto> findAllCommentByPlanId(Long planId) {
-        List<Comment> comments = commentRepository.findAllByPlan_Id(planId);
+        List<Comment> comments = commentRepository.findAllByPlan_PlanId(planId);
 
         if (comments.isEmpty()) {
-            throw new CommentNotFoundException(CommentFailMessage.COMMENT_NOT_FOUND);
+            throw new PlanNotFoundException(PlanFailMessage.PLAN_NOT_FOUND);
         }
         return comments.stream()
                 .map(CommentMapper::toDto)
@@ -87,10 +93,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentResponseDto updateComment(Long commentId, Long sessionUserId, CommentRequestDto requestDto) {
+
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException(CommentFailMessage.COMMENT_NOT_FOUND));
 
-        if (!comment.getUser().getId().equals(sessionUserId)) {
+        if (!comment.getUser().getUserId().equals(sessionUserId)) {
             throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_UPDATE_ACCESS);
         }
 
@@ -103,7 +110,7 @@ public class CommentServiceImpl implements CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException(CommentFailMessage.COMMENT_NOT_FOUND));
 
-        if (!comment.getUser().getId().equals(sessionUserId)) {
+        if (!comment.getUser().getUserId().equals(sessionUserId)) {
             throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_DELETE_ACCESS);
         }
 
