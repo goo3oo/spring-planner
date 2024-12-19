@@ -9,4 +9,5 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findAllByUser_UserId(Long userId);
     List<Comment> findAllByPlan_PlanId(Long planId);
+    int countByPlan_PlanId(Long planId);
 }

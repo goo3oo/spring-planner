@@ -13,6 +13,7 @@ public class PlanResponseDto {
     private String userName;
     private String title;
     private String content;
+    private int commentCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
