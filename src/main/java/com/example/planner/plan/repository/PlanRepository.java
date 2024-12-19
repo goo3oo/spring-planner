@@ -7,17 +7,17 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 public interface PlanRepository extends JpaRepository<Plan, Long> {
     @EntityGraph(attributePaths = {"user"})
-    @Query("SELECT p FROM Plan p LEFT JOIN p.user u " +
-            "WHERE (:userName IS NULL OR p.user.userName = :userName) " +
-            "AND (:updatedAt IS NULL OR p.updatedAt = :updatedAt)")
-    List<Plan> findByAuthorAndUpdatedAt(@Param("userName") String userName,
-                                        @Param("updatedAt") LocalDate updatedAt);
+    @Query("SELECT p FROM Plan p WHERE (:userId IS NULL OR p.user.userId = :userId) " +
+            "AND (:date IS NULL OR FUNCTION('DATE', p.updatedAt) = :date)")
+    List<Plan> findByAuthorAndUpdatedAt(@Param("userId") Long userId,
+                                        @Param("date") LocalDate date);
 
     @EntityGraph(attributePaths = {"user"})
-    Optional<Plan> findPlanById(Long id);
+    Optional<Plan> findPlanByPlanId(Long planId);
 }

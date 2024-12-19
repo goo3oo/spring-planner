@@ -17,9 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,12 +42,9 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PlanResponseDto> findAllPlan(String userName, String date) {
-        userName = convertEmptyToNull(userName);
-        date = convertEmptyToNull(date);
+    public List<PlanResponseDto> findAllPlan(Long userId, LocalDate date) {
 
-        LocalDate updatedAt = validateAndFormatDate(date);
-        List<Plan> plans = planRepository.findByAuthorAndUpdatedAt(userName, updatedAt);
+        List<Plan> plans = planRepository.findByAuthorAndUpdatedAt(userId, date);
 
         if (plans.isEmpty()) {
             throw new PlanNotFoundException(PlanFailMessage.PLAN_NOT_FOUND);
@@ -62,19 +57,19 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @Transactional(readOnly = true)
-    public PlanResponseDto findPlanById(Long id) {
-        Plan plan = planRepository.findPlanById(id)
+    public PlanResponseDto findPlanById(Long planId) {
+        Plan plan = planRepository.findPlanByPlanId(planId)
                 .orElseThrow(() -> new PlanNotFoundException(PlanFailMessage.PLAN_NOT_FOUND));
 
         return PlanMapper.toDto(plan);
     }
 
     @Override
-    public PlanResponseDto updatePlan(Long id, Long sessionUserId, PlanRequestDto requestDto) {
-        Plan plan = planRepository.findById(id)
+    public PlanResponseDto updatePlan(Long planId, Long sessionUserId, PlanRequestDto requestDto) {
+        Plan plan = planRepository.findById(planId)
                 .orElseThrow(() -> new PlanNotFoundException(PlanFailMessage.PLAN_NOT_FOUND));
 
-        if (!plan.getUser().getId().equals(sessionUserId)) {
+        if (!plan.getUser().getUserId().equals(sessionUserId)) {
             throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_UPDATE_ACCESS);
         }
 
@@ -83,30 +78,14 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public void deletePlan(Long id, Long sessionUserId) {
-        Plan plan = planRepository.findById(id)
+    public void deletePlan(Long planId, Long sessionUserId) {
+        Plan plan = planRepository.findById(planId)
                 .orElseThrow(() -> new PlanNotFoundException(PlanFailMessage.PLAN_NOT_FOUND));
 
-        if (!plan.getUser().getId().equals(sessionUserId)) {
-            throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_UPDATE_ACCESS);
+        if (!plan.getUser().getUserId().equals(sessionUserId)) {
+            throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_DELETE_ACCESS);
         }
 
         planRepository.delete(plan);
-    }
-
-    private String convertEmptyToNull(String value) {
-        return (value != null && value.isEmpty()) ? null : value;
-    }
-
-    private LocalDate validateAndFormatDate(String updatedAt) {
-        if (updatedAt != null) {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            try {
-                return LocalDate.parse(updatedAt, formatter);
-            } catch (DateTimeException e) {
-                throw new IllegalArgumentException("날짜 형식이 올바르지 않습니다. yyyy-MM-dd 형식으로 입력해주세요.");
-            }
-        }
-        return null;
     }
 }
