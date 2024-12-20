@@ -22,5 +22,5 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
                                         Pageable pageable);
 
     @EntityGraph(attributePaths = {"user"})
-    Plan<Plan> findPlanByPlanId(Long planId);
+    Optional<Plan> findPlanByPlanId(Long planId);
 }
