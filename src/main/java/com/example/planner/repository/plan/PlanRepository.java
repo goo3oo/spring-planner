@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 
 public interface PlanRepository extends JpaRepository<Plan, Long> {
+
     @EntityGraph(attributePaths = {"user"})
     @Query("SELECT p FROM Plan p WHERE (:userId IS NULL OR p.user.userId = :userId) " +
             "AND (:date IS NULL OR FUNCTION('DATE', p.updatedAt) = :date)")

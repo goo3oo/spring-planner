@@ -7,5 +7,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class CommentListResponseDto {
+
     private List<CommentResponseDto> comments;
 }

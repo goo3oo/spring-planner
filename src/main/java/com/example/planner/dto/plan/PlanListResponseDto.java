@@ -8,5 +8,6 @@ import org.springframework.data.domain.Page;
 @AllArgsConstructor
 
 public class PlanListResponseDto {
+
     private Page<PlanResponseDto> plans;
 }

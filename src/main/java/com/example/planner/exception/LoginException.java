@@ -4,12 +4,12 @@ import com.example.planner.constant.common.ErrorMessage;
 import lombok.Getter;
 
 @Getter
-public class CommentNotFoundException extends RuntimeException{ ;
+public class LoginException extends RuntimeException {
 
     private final ErrorMessage errorMessage;
 
-    public CommentNotFoundException(ErrorMessage errorMessage){
+    public LoginException(ErrorMessage errorMessage) {
         super(errorMessage.getMessage());
-        this.errorMessage = errorMessage;
+      this.errorMessage = errorMessage;
     }
 }

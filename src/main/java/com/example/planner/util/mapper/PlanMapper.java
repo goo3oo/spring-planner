@@ -1,4 +1,4 @@
-    package com.example.planner.util;
+    package com.example.planner.util.mapper;
 
     import com.example.planner.dto.common.PagingDto;
     import com.example.planner.dto.plan.PlanResponseDto;
@@ -9,8 +9,8 @@
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public class PlanMapper {
-        public static PlanResponseDto toDto(Plan plan, int  commentCount){
 
+        public static PlanResponseDto toDto(Plan plan, int  commentCount){
             return new PlanResponseDto(
                     plan.getPlanId(),
                     plan.getUser().getUserName(),

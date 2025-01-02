@@ -1,7 +1,9 @@
     package com.example.planner.dto.plan;
 
+    import com.example.planner.constant.common.ValidFailMessages;
     import com.example.planner.model.Plan;
     import com.example.planner.model.User;
+    import jakarta.validation.Valid;
     import jakarta.validation.constraints.NotEmpty;
     import jakarta.validation.constraints.NotNull;
     import jakarta.validation.constraints.Size;
@@ -9,12 +11,13 @@
 
     @Getter
     public class PlanRequestDto {
-        @NotEmpty(message = "일정 제목을 입력해주세요.")
-        @Size(min = 1, max = 50, message = "일정 제목은 1~50자 내로 입력해주세요.")
+
+        @NotEmpty(message = ValidFailMessages.NOT_NULL)
+        @Size(min = 1, max = 50, message = ValidFailMessages.PLAN_TITLE_LENGTH)
         private String title;
 
-        @NotNull(message = "일정 내용을 입력해주세요.")
-        @Size(max = 1000, message = "일정 내용은 최대 1000글자까지 입력할 수 있습니다.")
+        @NotEmpty(message = ValidFailMessages.NOT_NULL)
+        @Size(max = 1000, message = ValidFailMessages.PLAN_CONTENT_LENGTH)
         private String content;
 
         public Plan toEntity(User user){

@@ -5,6 +5,7 @@ import com.example.planner.dto.comment.CommentResponseDto;
 import java.util.List;
 
 public interface CommentService {
+
     CommentResponseDto postComment(CommentRequestDto requestDto, Long sessionUserId, Long planId);
     List<CommentResponseDto> findAllCommentByUserId(Long userId);
     List<CommentResponseDto> findAllCommentByPlanId(Long planId);

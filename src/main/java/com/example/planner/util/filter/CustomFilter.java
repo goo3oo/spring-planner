@@ -7,6 +7,7 @@ import java.io.IOException;
 
 @Slf4j
 public class CustomFilter implements Filter {
+
     @Override
     public void doFilter(
             ServletRequest request,

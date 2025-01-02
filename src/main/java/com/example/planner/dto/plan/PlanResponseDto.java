@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class PlanResponseDto {
+
     private Long planId;
     private String userName;
     private String title;

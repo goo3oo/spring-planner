@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 public class CommentResponseDto {
+
     private Long commentId;
     private Long planId;
     private String email;

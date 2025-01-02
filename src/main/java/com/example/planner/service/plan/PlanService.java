@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import java.time.LocalDate;
 
 public interface PlanService {
+
     PlanResponseDto createPlan(PlanRequestDto requestDto, HttpSession session);
     PageResponseDto findAllPlan(Long userId, LocalDate date, Pageable pageable);
     PlanResponseDto findPlanById(Long planId);

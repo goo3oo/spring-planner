@@ -1,14 +1,15 @@
 package com.example.planner.exception;
 
-import com.example.planner.constant.common.AuthFailMessage;
+import com.example.planner.constant.common.ErrorMessage;
 import lombok.Getter;
 
 @Getter
 public class AuthenticationException extends RuntimeException{
-    private final AuthFailMessage failReason;
 
-    public AuthenticationException(AuthFailMessage failReason){
-        super(failReason.getMessage());
-        this.failReason = failReason;
+    private final ErrorMessage errorMessage;
+
+    public AuthenticationException(ErrorMessage errorMessage){
+        super(errorMessage.getMessage());
+        this.errorMessage = errorMessage;
     }
 }

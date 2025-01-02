@@ -11,6 +11,6 @@ import java.util.List;
 public class PageResponseDto {
 
     private PagingDto paging;
-    private List<PlanResponseDto> planResponseDtoList;
+    private List<PlanResponseDto> plans;
 
 }

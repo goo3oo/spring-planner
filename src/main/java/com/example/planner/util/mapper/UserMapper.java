@@ -1,4 +1,4 @@
-package com.example.planner.util;
+package com.example.planner.util.mapper;
 
 import com.example.planner.dto.user.UserResponseDto;
 import com.example.planner.model.User;
@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserMapper {
+
     public static UserResponseDto toDto(User user){
         return new UserResponseDto(
                 user.getUserId(),

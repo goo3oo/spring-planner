@@ -1,15 +1,14 @@
 package com.example.planner.service.user;
 
-import com.example.planner.constant.common.AuthFailMessage;
+import com.example.planner.constant.common.ErrorMessage;
 import com.example.planner.exception.AuthenticationException;
-import com.example.planner.constant.UserFailMessage;
 import com.example.planner.dto.user.UserUpdateUserIdRequestDto;
 import com.example.planner.dto.user.UserUpdatePasswordRequestDto;
 import com.example.planner.dto.user.UserResponseDto;
 import com.example.planner.model.User;
 import com.example.planner.exception.UserNotFoundException;
 import com.example.planner.repository.user.UserRepository;
-import com.example.planner.util.UserMapper;
+import com.example.planner.util.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +27,7 @@ public class UserServiceImpl implements UserService{
     @Transactional(readOnly = true)
     public UserResponseDto findUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(()->new UserNotFoundException(UserFailMessage.USER_NOT_FOUND));
+                .orElseThrow(()->new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
 
         return UserMapper.toDto(user);
     }
@@ -38,7 +37,7 @@ public class UserServiceImpl implements UserService{
         List<User> users = userRepository.findAll();
 
         if (users.isEmpty()) {
-            throw new UserNotFoundException(UserFailMessage.USER_NOT_FOUND);
+            throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND);
         }
         return users.stream()
                 .map(UserMapper::toDto)
@@ -48,10 +47,10 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserResponseDto updatePassword(Long id, Long sessionUserId, UserUpdatePasswordRequestDto requestDto) {
         User user = userRepository.findById(id)
-                .orElseThrow(()->new UserNotFoundException(UserFailMessage.USER_NOT_FOUND));
+                .orElseThrow(()->new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
 
         if (!user.getUserId().equals(sessionUserId)) {
-            throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_UPDATE_ACCESS);
+            throw new AuthenticationException(ErrorMessage.UNAUTHORIZED_ACCESS);
         }
 
         user.updatePassword(requestDto.getPassword());
@@ -61,14 +60,14 @@ public class UserServiceImpl implements UserService{
     @Override
     public UserResponseDto updateUserName(Long id, Long sessionUserId, UserUpdateUserIdRequestDto requestDto) {
        if(!id.equals(sessionUserId)){
-            throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_UPDATE_ACCESS);
+            throw new AuthenticationException(ErrorMessage.USER_LOGGED_OUT);
        }
 
         User user = userRepository.findById(id)
-                .orElseThrow(()->new UserNotFoundException(UserFailMessage.USER_NOT_FOUND));
+                .orElseThrow(()->new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
 
         if (!user.getUserId().equals(sessionUserId)) {
-            throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_UPDATE_ACCESS);
+            throw new AuthenticationException(ErrorMessage.UNAUTHORIZED_ACCESS);
         }
 
         user.updateUserName(requestDto.getUserName());
@@ -78,10 +77,10 @@ public class UserServiceImpl implements UserService{
     @Override
     public void deleteEmail(Long id, Long sessionUserId) {
         User user = userRepository.findById(id)
-                .orElseThrow(()->new UserNotFoundException(UserFailMessage.USER_NOT_FOUND));
+                .orElseThrow(()->new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
 
         if (!user.getUserId().equals(sessionUserId)) {
-            throw new AuthenticationException(AuthFailMessage.UNAUTHORIZED_UPDATE_ACCESS);
+            throw new AuthenticationException(ErrorMessage.UNAUTHORIZED_ACCESS);
         }
 
         userRepository.delete(user);

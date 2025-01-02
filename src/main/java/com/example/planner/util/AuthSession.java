@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthSession {
+
     public static final String SESSION_KEY = "USER_ID";
 
     public static void setSession(HttpSession session, Long id) {

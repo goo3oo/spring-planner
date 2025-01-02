@@ -1,17 +1,18 @@
 package com.example.planner.dto.auth;
 
+import com.example.planner.constant.common.ValidFailMessages;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 
 @Getter
 public class LoginRequestDto {
-    @NotNull(message = "이메일을 입력해주세요.")
-    @Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = "이메일 형식에 맞게 입력해주세요.")
+
+    @NotNull(message = ValidFailMessages.NOT_NULL)
+    @Pattern(regexp = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$", message = ValidFailMessages.INVALID_EMAIL_FORMAT)
     private String email;
 
-    @NotNull(message = "비밀번호를 입력해주세요.")
-    @Pattern(regexp = "^[a-zA-Z0-9~!@#$-_+.,:?]{4,20}[^<>?{}&'\"/;%\\s()^=#]*$",
-            message = "비밀번호는 4~20자 내로 입력해주세요. 특수문자 '< > ? { } & ' \" / ; % 공백 ( ) ^ = #'를 포함할 수 없습니다.")
+    @NotNull(message = ValidFailMessages.NOT_NULL)
+    @Pattern(regexp = "^[a-zA-Z0-9~!@#$-_+.,:?]{4,20}[^<>?{}&'\"/;%\\s()^=#]*$", message = ValidFailMessages.PASSWORD_LENGTH)
     private String password;
 }

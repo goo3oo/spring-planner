@@ -1,6 +1,6 @@
 package com.example.planner.util.filter;
 
-import com.example.planner.constant.common.AuthFailMessage;
+import com.example.planner.constant.common.ErrorMessage;
 import com.example.planner.exception.AuthenticationException;
 import com.example.planner.util.AuthSession;
 import jakarta.servlet.*;
@@ -11,6 +11,7 @@ import org.springframework.util.PatternMatchUtils;
 import java.io.IOException;
 
 public class LoginFilter implements Filter {
+
     private static final String[] WHITE_LIST = {"/", "/auth/signup", "/auth/login", "/auth/logout"};
     @Override
     public void doFilter(
@@ -26,7 +27,7 @@ public class LoginFilter implements Filter {
             HttpSession session = httpRequest.getSession(false);
 
             if (session == null || session.getAttribute(AuthSession.SESSION_KEY) == null ){
-                throw new AuthenticationException(AuthFailMessage.LOGIN_REQUIRED);
+                throw new AuthenticationException(ErrorMessage.LOGIN_REQUIRED);
             }
         }
         chain.doFilter(request, response);

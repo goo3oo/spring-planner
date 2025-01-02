@@ -7,6 +7,7 @@ import com.example.planner.dto.user.UserResponseDto;
 import java.util.List;
 
 public interface UserService {
+
     UserResponseDto findUserById(Long id);
     List<UserResponseDto> findAllUser();
     UserResponseDto updatePassword(Long id, Long sessionUserId, UserUpdatePasswordRequestDto requestDto);

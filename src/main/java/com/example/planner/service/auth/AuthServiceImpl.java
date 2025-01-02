@@ -1,11 +1,13 @@
 package com.example.planner.service.auth;
 
+import com.example.planner.constant.common.ErrorMessage;
 import com.example.planner.dto.auth.AuthResponseDto;
 import com.example.planner.config.PasswordEncoder;
-import com.example.planner.constant.common.AuthFailMessage;
 import com.example.planner.dto.auth.LoginRequestDto;
 import com.example.planner.exception.AuthenticationException;
 import com.example.planner.dto.auth.SignupRequestDto;
+import com.example.planner.exception.LoginException;
+import com.example.planner.exception.UserNotFoundException;
 import com.example.planner.model.User;
 import com.example.planner.repository.user.UserRepository;
 import com.example.planner.util.AuthSession;
@@ -18,16 +20,18 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional
 public class AuthServiceImpl implements AuthService{
+    
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public AuthResponseDto createUser(SignupRequestDto requestDto) {
+
         String EncodedPassword = passwordEncoder.encode(requestDto.getPassword());
 
         User user = requestDto.toEntity(EncodedPassword);
         if(userRepository.existsByEmail(requestDto.getEmail())){
-            throw new AuthenticationException(AuthFailMessage.DUPLICATE_EMAIL);
+            throw new AuthenticationException(ErrorMessage.DUPLICATE_EMAIL);
         }
 
         userRepository.save(user);
@@ -35,20 +39,18 @@ public class AuthServiceImpl implements AuthService{
     }
 
     @Override
-    public AuthResponseDto logIn(
-            LoginRequestDto requestDto,
-            HttpSession session
-    ) {
+    public AuthResponseDto logIn(LoginRequestDto requestDto, HttpSession session) {
+
         Long existingUserId = getExistingUserId(session);
         if (existingUserId != null) {
             AuthSession.invalidSession(session);
         }
 
         User user = userRepository.findByEmail(requestDto.getEmail())
-                .orElseThrow(() -> new AuthenticationException(AuthFailMessage.EMAIL_NOT_FOUND));
+                .orElseThrow(() -> new AuthenticationException(ErrorMessage.EMAIL_NOT_FOUND));
 
         if (!passwordEncoder.matches(requestDto.getPassword(), user.getPassword())) {
-            throw new AuthenticationException(AuthFailMessage.INVALID_PASSWORD);
+            throw new AuthenticationException(ErrorMessage.INVALID_PASSWORD);
         }
         AuthSession.setSession(session, user.getUserId());
         return new AuthResponseDto(user.getEmail(), user.getUserName());
@@ -58,10 +60,10 @@ public class AuthServiceImpl implements AuthService{
     public AuthResponseDto logOut(HttpSession session) {
         Long sessionUserId = getExistingUserId(session);
         if(sessionUserId == null){
-            throw new AuthenticationException(AuthFailMessage.USER_LOGGED_OUT);
+            throw new LoginException(ErrorMessage.USER_LOGGED_OUT);
         }
         User user = userRepository.findById(sessionUserId)
-                .orElseThrow(()->new AuthenticationException(AuthFailMessage.USER_NOT_FOUND));
+                .orElseThrow(()->new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
 
         AuthSession.invalidSession(session);
         return new AuthResponseDto(user.getEmail(),user.getUserName());

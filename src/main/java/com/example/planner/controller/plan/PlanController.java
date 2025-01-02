@@ -1,15 +1,11 @@
 package com.example.planner.controller.plan;
 
-import com.example.planner.dto.common.ApiResponseDto;
+import com.example.planner.constant.common.SuccessMessages;
 import com.example.planner.dto.common.PageResponseDto;
-import com.example.planner.dto.common.ValidationResponseDto;
-import com.example.planner.exception.AuthenticationException;
+import com.example.planner.dto.common.SuccessResponseDto;;
 import com.example.planner.util.AuthSession;
-import com.example.planner.util.BindingResultUtils;
-import com.example.planner.constant.PlanSuccessMessage;
 import com.example.planner.dto.plan.PlanRequestDto;
 import com.example.planner.dto.plan.PlanResponseDto;
-import com.example.planner.exception.PlanNotFoundException;
 import com.example.planner.service.plan.PlanService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -20,7 +16,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -29,98 +24,58 @@ import java.time.LocalDate;
 @RequestMapping("/plans")
 @RequiredArgsConstructor
 public class PlanController {
+
     private final PlanService planService;
 
     @PostMapping
-    public ResponseEntity<?> createPlan(
+    public ResponseEntity<SuccessResponseDto<PlanResponseDto>> createPlan(
             @Valid @RequestBody PlanRequestDto requestDto,
-            BindingResult bindingResult,
             HttpSession session
     ) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(ValidationResponseDto.fail(BindingResultUtils.extractErrorMessages(bindingResult)));
-        }
-
-        try {
             PlanResponseDto responseDto = planService.createPlan(requestDto, session);
             return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(ApiResponseDto.success(PlanSuccessMessage.CREATE_PLAN_SUCCESS.getMessage(), responseDto));
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(ApiResponseDto.fail(e.getMessage()));
-        }
+                    .body(SuccessResponseDto.of(SuccessMessages.CREATE_PLAN_SUCCESS.getMessage(), responseDto));
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponseDto<PageResponseDto>> findAllPlan(
+    public ResponseEntity<SuccessResponseDto<PageResponseDto>> findAllPlan(
             @RequestParam(required = false) Long userId,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
                     @PageableDefault(size = 10, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable){
-        try {
+
             PageResponseDto pageResponseDto = planService.findAllPlan(userId, date, pageable);
 
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponseDto.success(PlanSuccessMessage.FIND_PLAN_SUCCESS.getMessage(), pageResponseDto));
-        } catch (PlanNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ApiResponseDto.fail(e.getMessage()));
-        }
+                    .body(SuccessResponseDto.of(SuccessMessages.FIND_PLAN_SUCCESS.getMessage(), pageResponseDto));
     }
 
     @GetMapping("/{planId}")
-    public ResponseEntity<ApiResponseDto<PlanResponseDto>> findPlanById(
+    public ResponseEntity<SuccessResponseDto<PlanResponseDto>> findPlanById(
             @PathVariable Long planId
     ) {
-        try {
             PlanResponseDto responseDto = planService.findPlanById(planId);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponseDto.success(PlanSuccessMessage.FIND_PLAN_SUCCESS.getMessage(), responseDto));
-        } catch (PlanNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ApiResponseDto.fail(e.getMessage()));
-        }
+                    .body(SuccessResponseDto.of(SuccessMessages.FIND_PLAN_SUCCESS.getMessage(), responseDto));
     }
 
     @PatchMapping("/{planId}")
-    public ResponseEntity<?> updatePlan(
+    public ResponseEntity<SuccessResponseDto<PlanResponseDto>> updatePlan(
             @RequestBody PlanRequestDto requestDto,
-            BindingResult bindingResult,
             @PathVariable Long planId,
             @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
     ) {
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(ValidationResponseDto.fail(BindingResultUtils.extractErrorMessages(bindingResult)));
-        }
-        try {
             PlanResponseDto responseDto = planService.updatePlan(planId, sessionUserId, requestDto);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponseDto.success(PlanSuccessMessage.UPDATE_PLAN_SUCCESS.getMessage(), responseDto));
-        } catch (PlanNotFoundException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ApiResponseDto.fail(e.getMessage()));
-        }catch (AuthenticationException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(ApiResponseDto.fail(e.getMessage()));
-        }
+                    .body(SuccessResponseDto.of(SuccessMessages.UPDATE_PLAN_SUCCESS.getMessage(), responseDto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponseDto<Void>> deletePlan(
+    public ResponseEntity<SuccessResponseDto<Object>> deletePlan(
             @PathVariable Long id,
             @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
     ) {
-        try {
             planService.deletePlan(id, sessionUserId);
             return ResponseEntity.status(HttpStatus.OK)
-                    .body(ApiResponseDto.success(PlanSuccessMessage.DELETE_PLAN_SUCCESS.getMessage()));
-        }catch (PlanNotFoundException e){
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ApiResponseDto.fail(e.getMessage()));
-        }catch (AuthenticationException e){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(ApiResponseDto.fail(e.getMessage()));
-        }
+                    .body(SuccessResponseDto.of(SuccessMessages.DELETE_PLAN_SUCCESS.getMessage()));
     }
 }
