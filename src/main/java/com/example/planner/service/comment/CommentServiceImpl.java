@@ -6,6 +6,8 @@ import com.example.planner.dto.comment.CommentResponseDto;
 import com.example.planner.exception.*;
 import com.example.planner.model.Comment;
 import com.example.planner.repository.comment.CommentRepository;
+import com.example.planner.service.plan.PlanService;
+import com.example.planner.service.user.UserService;
 import com.example.planner.util.mapper.CommentMapper;
 import com.example.planner.model.Plan;
 import com.example.planner.repository.plan.PlanRepository;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,28 +26,24 @@ import java.util.stream.Collectors;
 @Transactional
 public class CommentServiceImpl implements CommentService {
 
-    private final PlanRepository planRepository;
     private final UserRepository userRepository;
     private final CommentRepository commentRepository;
+    private final UserService userService;
+    private final PlanService planService;
+
 
     @Override
-    public CommentResponseDto postComment(
-            CommentRequestDto requestDto,
-            Long sessionUserId,
-            Long planId
-    ) {
+    public CommentResponseDto postComment(CommentRequestDto requestDto, Long sessionUserId, Long planId) {
         if (sessionUserId == null) {
             throw new AuthenticationException(ErrorMessage.USER_LOGGED_OUT);
         }
-        User user = userRepository.findById(sessionUserId)
-                .orElseThrow(() -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
 
-        Plan plan = planRepository.findById(planId)
-                .orElseThrow(() -> new PlanNotFoundException(ErrorMessage.PLAN_NOT_FOUND));
-
+        User user = userService.findById(sessionUserId);
+        Plan plan = planService.findById(planId);
         Comment comment = requestDto.toEntity(user, plan);
 
         commentRepository.save(comment);
+
         return CommentMapper.toDto(comment);
     }
 
@@ -97,6 +96,7 @@ public class CommentServiceImpl implements CommentService {
         }
 
         comment.updateComment(requestDto.getContent());
+
         return CommentMapper.toDto(comment);
     }
 
@@ -112,8 +112,13 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.delete(comment);
     }
 
+    @Override
     public int getCommentCountByPlanId(Long planId) {
         return commentRepository.countByPlan_PlanId(planId);
+    }
+
+    public List<Object[]> countCommentsByPlanIds(List<Long> planIds) {
+        return commentRepository.countCommentsByPlanIds(planIds);
     }
 }
 
