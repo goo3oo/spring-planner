@@ -32,30 +32,30 @@ public class PlanController {
             @Valid @RequestBody PlanRequestDto requestDto,
             HttpSession session
     ) {
-            PlanResponseDto responseDto = planService.createPlan(requestDto, session);
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(SuccessResponseDto.of(SuccessMessages.CREATE_PLAN_SUCCESS.getMessage(), responseDto));
+        PlanResponseDto responseDto = planService.createPlan(requestDto, session);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(SuccessResponseDto.of(SuccessMessages.CREATE_PLAN_SUCCESS.getMessage(), responseDto));
     }
 
     @GetMapping
     public ResponseEntity<SuccessResponseDto<PageResponseDto>> findAllPlan(
             @RequestParam(required = false) Long userId,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-                    @PageableDefault(size = 10, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable){
+            @PageableDefault(size = 10, sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable) {
 
-            PageResponseDto pageResponseDto = planService.findAllPlan(userId, date, pageable);
+        PageResponseDto pageResponseDto = planService.findAllPlan(userId, date, pageable);
 
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(SuccessResponseDto.of(SuccessMessages.FIND_PLAN_SUCCESS.getMessage(), pageResponseDto));
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(SuccessResponseDto.of(SuccessMessages.FIND_PLAN_SUCCESS.getMessage(), pageResponseDto));
     }
 
     @GetMapping("/{planId}")
     public ResponseEntity<SuccessResponseDto<PlanResponseDto>> findPlanById(
             @PathVariable Long planId
     ) {
-            PlanResponseDto responseDto = planService.findPlanById(planId);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(SuccessResponseDto.of(SuccessMessages.FIND_PLAN_SUCCESS.getMessage(), responseDto));
+        PlanResponseDto responseDto = planService.findPlanById(planId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(SuccessResponseDto.of(SuccessMessages.FIND_PLAN_SUCCESS.getMessage(), responseDto));
     }
 
     @PatchMapping("/{planId}")
@@ -64,9 +64,9 @@ public class PlanController {
             @PathVariable Long planId,
             @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
     ) {
-            PlanResponseDto responseDto = planService.updatePlan(planId, sessionUserId, requestDto);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(SuccessResponseDto.of(SuccessMessages.UPDATE_PLAN_SUCCESS.getMessage(), responseDto));
+        PlanResponseDto responseDto = planService.updatePlan(planId, sessionUserId, requestDto);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(SuccessResponseDto.of(SuccessMessages.UPDATE_PLAN_SUCCESS.getMessage(), responseDto));
     }
 
     @DeleteMapping("/{id}")
@@ -74,8 +74,8 @@ public class PlanController {
             @PathVariable Long id,
             @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
     ) {
-            planService.deletePlan(id, sessionUserId);
-            return ResponseEntity.status(HttpStatus.OK)
-                    .body(SuccessResponseDto.of(SuccessMessages.DELETE_PLAN_SUCCESS.getMessage()));
+        planService.deletePlan(id, sessionUserId);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(SuccessResponseDto.of(SuccessMessages.DELETE_PLAN_SUCCESS.getMessage()));
     }
 }

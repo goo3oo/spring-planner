@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 
 @Getter
 @AllArgsConstructor
-
 public class PlanListResponseDto {
 
     private Page<PlanResponseDto> plans;

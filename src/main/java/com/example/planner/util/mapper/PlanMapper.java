@@ -10,7 +10,7 @@
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public class PlanMapper {
 
-        public static PlanResponseDto toDto(Plan plan, int  commentCount){
+        public static PlanResponseDto toDto(Plan plan, int commentCount){
             return new PlanResponseDto(
                     plan.getPlanId(),
                     plan.getUser().getUserName(),
