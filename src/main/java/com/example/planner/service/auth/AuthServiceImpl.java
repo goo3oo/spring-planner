@@ -45,7 +45,7 @@ public class AuthServiceImpl implements AuthService{
         }
 
         User user = userService.findUserByEmailOrThrow(requestDto.getEmail());
-        // 패스워드 일치 여부 확인
+        // 패스워드 일치 여부 확인 ( User entity 에 로직 위임 )
         user.validatePassword(passwordEncoder, requestDto.getPassword());
 
         AuthSession.setSession(session, user.getUserId());

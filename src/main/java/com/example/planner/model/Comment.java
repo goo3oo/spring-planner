@@ -1,5 +1,7 @@
 package com.example.planner.model;
 
+import com.example.planner.constant.common.ErrorMessage;
+import com.example.planner.exception.LoginException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -35,6 +37,12 @@ public class Comment extends BaseEntity {
         this.user = user;
         this.plan = plan;
         this.content = content;
+    }
+
+    public void isOwner(Long userId) {
+        if(!this.getUser().getUserId().equals(userId)) {
+            throw new LoginException(ErrorMessage.UNAUTHORIZED_ACCESS);
+        }
     }
 
     public void updateComment(String content){

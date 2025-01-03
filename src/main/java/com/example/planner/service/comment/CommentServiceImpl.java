@@ -59,6 +59,7 @@ public class CommentServiceImpl implements CommentService {
         if (comments.isEmpty()) {
             throw new CommentNotFoundException(ErrorMessage.COMMENT_NOT_FOUND);
         }
+
         return comments.stream()
                 .map(CommentMapper::toDto)
                 .collect(Collectors.toList());
@@ -72,6 +73,7 @@ public class CommentServiceImpl implements CommentService {
         if (comments.isEmpty()) {
             throw new PlanNotFoundException(ErrorMessage.PLAN_NOT_FOUND);
         }
+
         return comments.stream()
                 .map(CommentMapper::toDto)
                 .collect(Collectors.toList());
@@ -90,10 +92,8 @@ public class CommentServiceImpl implements CommentService {
 
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException(ErrorMessage.COMMENT_NOT_FOUND));
-
-        if (!comment.getUser().getUserId().equals(sessionUserId)) {
-            throw new LoginException(ErrorMessage.UNAUTHORIZED_ACCESS);
-        }
+        // 로그인한 유저가 작성한 코멘트인지 확인 ( Comment Entity 로 로직 위임 )
+        comment.isOwner(sessionUserId);
 
         comment.updateComment(requestDto.getContent());
 
@@ -104,10 +104,8 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComment(Long commentId, Long sessionUserId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new CommentNotFoundException(ErrorMessage.COMMENT_NOT_FOUND));
-
-        if (!comment.getUser().getUserId().equals(sessionUserId)) {
-            throw new LoginException(ErrorMessage.UNAUTHORIZED_ACCESS);
-        }
+        // 로그인한 유저가 작성한 코멘트인지 확인 ( Comment Entity 로 로직 위임 )
+        comment.isOwner(sessionUserId);
 
         commentRepository.delete(comment);
     }

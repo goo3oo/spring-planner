@@ -58,12 +58,11 @@ public class UserController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<SuccessResponseDto<Object>> deleteUser(
+    public ResponseEntity<SuccessResponseDto<Void>> deleteUser(
             @PathVariable Long id,
             @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
     ) {
-        service.deleteEmail(id, sessionUserId);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(SuccessResponseDto.of(SuccessMessages.USER_DELETE_SUCCESS.getMessage()));
+        service.deleteUser(id, sessionUserId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
