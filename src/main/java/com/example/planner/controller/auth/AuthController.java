@@ -7,6 +7,7 @@ import com.example.planner.dto.auth.LoginRequestDto;
 import com.example.planner.dto.auth.SignupRequestDto;
 import com.example.planner.dto.common.SuccessResponseDto;
 import com.example.planner.service.auth.AuthService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,9 +37,9 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<SuccessResponseDto<AuthResponseDto>> logIn(
             @Valid @RequestBody LoginRequestDto requestDto,
-            HttpSession session
+            HttpServletRequest request
     ) {
-        AuthResponseDto responseDto = authService.logIn(requestDto, session);
+        AuthResponseDto responseDto = authService.logIn(requestDto, request);
         return ResponseEntity.status(HttpStatus.OK).
                 body(SuccessResponseDto.of(SuccessMessages.LOGIN_SUCCESS.getMessage(), responseDto));
     }

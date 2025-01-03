@@ -17,18 +17,18 @@ import java.util.List;
 public class GlobalExceptionHandler {
     // 벨리데이션 관련 예외
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponseDto> handleValidationException(MethodArgumentNotValidException ex){
+    public ResponseEntity<ErrorResponseDto> handleValidationException(MethodArgumentNotValidException ex) {
 
         BindingResult bindingResult = ex.getBindingResult();
         List<String> errorMessages = BindingResultUtils.extractErrorMessages(bindingResult);
 
-        ErrorResponseDto responseDto = ErrorResponseDto.of(ErrorMessage.VALIDATION_ERROR.getMessage(),errorMessages);
+        ErrorResponseDto responseDto = ErrorResponseDto.of(ErrorMessage.VALIDATION_ERROR.getMessage(), errorMessages);
         return new ResponseEntity<>(responseDto, ErrorMessage.VALIDATION_ERROR.getHttpStatus());
     }
 
     // Auth 관련 예외
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ErrorResponseDto> handleAuthenticationException(AuthenticationException ex){
+    public ResponseEntity<ErrorResponseDto> handleAuthenticationException(AuthenticationException ex) {
 
         ErrorResponseDto responseDto = ErrorResponseDto.of(ex.getMessage());
         return new ResponseEntity<>(responseDto, ex.getErrorMessage().getHttpStatus());
@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
 
     // 로그인 관련 예외
     @ExceptionHandler(LoginException.class)
-    public ResponseEntity<ErrorResponseDto> handleLoginException(LoginException ex){
+    public ResponseEntity<ErrorResponseDto> handleLoginException(LoginException ex) {
 
         ErrorResponseDto responseDto = ErrorResponseDto.of(ex.getMessage());
         return new ResponseEntity<>(responseDto, ex.getErrorMessage().getHttpStatus());
@@ -44,7 +44,7 @@ public class GlobalExceptionHandler {
 
     // 코멘트 Not Found 예외
     @ExceptionHandler(CommentNotFoundException.class)
-    public ResponseEntity<ErrorResponseDto> handleCommentNotFoundException(CommentNotFoundException ex){
+    public ResponseEntity<ErrorResponseDto> handleCommentNotFoundException(CommentNotFoundException ex) {
 
         ErrorResponseDto responseDto = ErrorResponseDto.of(ex.getMessage());
         return new ResponseEntity<>(responseDto, ex.getErrorMessage().getHttpStatus());
@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
 
     // 일정 Not Found 예외
     @ExceptionHandler(PlanNotFoundException.class)
-    public ResponseEntity<ErrorResponseDto> handlePlanNotFoundException(PlanNotFoundException ex){
+    public ResponseEntity<ErrorResponseDto> handlePlanNotFoundException(PlanNotFoundException ex) {
 
         ErrorResponseDto responseDto = ErrorResponseDto.of(ex.getMessage());
         return new ResponseEntity<>(responseDto, ex.getErrorMessage().getHttpStatus());
@@ -60,7 +60,7 @@ public class GlobalExceptionHandler {
 
     // 유저 Not Found 예외
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponseDto> handleUserNotFoundException(UserNotFoundException ex){
+    public ResponseEntity<ErrorResponseDto> handleUserNotFoundException(UserNotFoundException ex) {
 
         ErrorResponseDto responseDto = ErrorResponseDto.of(ex.getMessage());
         return new ResponseEntity<>(responseDto, ex.getErrorMessage().getHttpStatus());

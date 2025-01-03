@@ -4,7 +4,7 @@ import com.example.planner.constant.common.ErrorMessage;
 import lombok.Getter;
 
 @Getter
-public class CommentNotFoundException extends RuntimeException{ ;
+public class CommentNotFoundException extends RuntimeException{
 
     private final ErrorMessage errorMessage;
 
