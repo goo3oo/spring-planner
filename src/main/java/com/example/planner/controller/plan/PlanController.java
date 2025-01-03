@@ -70,12 +70,11 @@ public class PlanController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<SuccessResponseDto<Object>> deletePlan(
+    public ResponseEntity<SuccessResponseDto<Void>> deletePlan(
             @PathVariable Long id,
             @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
     ) {
         planService.deletePlan(id, sessionUserId);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(SuccessResponseDto.of(SuccessMessages.DELETE_PLAN_SUCCESS.getMessage()));
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

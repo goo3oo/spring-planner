@@ -13,7 +13,7 @@ public interface UserService {
     List<UserResponseDto> findAllUser();
     UserResponseDto updatePassword(Long id, Long sessionUserId, UserUpdatePasswordRequestDto requestDto);
     UserResponseDto updateUserName(Long id, Long sessionUserId, UserUpdateUserIdRequestDto requestDto);
-    void deleteEmail(Long id, Long sessionUserId);
+    void deleteUser(Long id, Long sessionUserId);
     void checkDuplicateEmail(String email);
     User findUserByEmailOrThrow(String email);
     User findUserByUserIdOrThrow(Long sessionUserId);
