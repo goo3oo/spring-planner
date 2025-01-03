@@ -52,10 +52,8 @@ public class UserServiceImpl implements UserService{
     public UserResponseDto updatePassword(Long id, Long sessionUserId, UserUpdatePasswordRequestDto requestDto) {
         User user = userRepository.findById(id)
                 .orElseThrow(()->new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
-        // entity 메서드로 변경 isOwner
-        if (!user.getUserId().equals(sessionUserId)) {
-            throw new AuthenticationException(ErrorMessage.UNAUTHORIZED_ACCESS);
-        }
+        // 로그인한 유저 본인의 정보를 수정하는지 확인 ( User entity 로 로직 위임 )
+        user.isOwner(sessionUserId);
 
         user.updatePassword(requestDto.getPassword(), passwordEncoder);
 
@@ -64,16 +62,10 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public UserResponseDto updateUserName(Long id, Long sessionUserId, UserUpdateUserIdRequestDto requestDto) {
-       if(!id.equals(sessionUserId)){
-            throw new AuthenticationException(ErrorMessage.USER_LOGGED_OUT);
-       }
-
         User user = userRepository.findById(id)
                 .orElseThrow(()->new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
-        // entity 메서드로 변경 isOwner?
-        if (!user.getUserId().equals(sessionUserId)) {
-            throw new AuthenticationException(ErrorMessage.UNAUTHORIZED_ACCESS);
-        }
+        // 로그인한 유저 본인의 정보를 수정하는지 확인 ( User entity 로 로직 위임 )
+        user.isOwner(sessionUserId);
 
         user.updateUserName(requestDto.getUserName());
 
@@ -81,13 +73,11 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void deleteEmail(Long id, Long sessionUserId) {
+    public void deleteUser(Long id, Long sessionUserId) {
         User user = userRepository.findById(id)
                 .orElseThrow(()->new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
-        // entity 메서드로 변경 isOwner?
-        if (!user.getUserId().equals(sessionUserId)) {
-            throw new AuthenticationException(ErrorMessage.UNAUTHORIZED_ACCESS);
-        }
+        // 로그인한 유저 본인의 정보를 수정하는지 확인 ( User entity 로 로직 위임 )
+        user.isOwner(sessionUserId);
 
         userRepository.delete(user);
     }

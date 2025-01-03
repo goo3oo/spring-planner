@@ -86,10 +86,8 @@ public class PlanServiceImpl implements PlanService {
     public PlanResponseDto updatePlan(Long planId, Long sessionUserId, PlanRequestDto requestDto) {
         Plan plan = planRepository.findById(planId)
                 .orElseThrow(() -> new PlanNotFoundException(ErrorMessage.PLAN_NOT_FOUND));
-        // entity 메서드로 변경 isOwner
-        if (!plan.getUser().getUserId().equals(sessionUserId)) {
-            throw new AuthenticationException(ErrorMessage.UNAUTHORIZED_ACCESS);
-        }
+        // 로그인한 유저가 작성한 일정인지 확인 ( Plan Entity 로 로직 위입 )
+        plan.isOwner(sessionUserId);
 
         plan.updatePlan(requestDto.getTitle(), requestDto.getContent());
 
@@ -100,10 +98,8 @@ public class PlanServiceImpl implements PlanService {
     public void deletePlan(Long planId, Long sessionUserId) {
         Plan plan = planRepository.findById(planId)
                 .orElseThrow(() -> new PlanNotFoundException(ErrorMessage.PLAN_NOT_FOUND));
-        // entity 메서드로 변경 isOwner
-        if (!plan.getUser().getUserId().equals(sessionUserId)) {
-            throw new AuthenticationException(ErrorMessage.UNAUTHORIZED_ACCESS);
-        }
+        // 로그인한 유저가 작성한 일정인지 확인 ( Plan Entity 로 로직 위입 )
+        plan.isOwner(sessionUserId);
 
         planRepository.delete(plan);
     }
