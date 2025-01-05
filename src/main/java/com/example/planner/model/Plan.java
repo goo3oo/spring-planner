@@ -31,14 +31,14 @@ public class Plan extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
-    public Plan(User user, String title, String content){
+    public Plan(User user, String title, String content) {
         this.user = user;
         this.title = title;
         this.content = content;
     }
 
-    public void isOwner(Long sessionUserId){
-        if(!this.getUser().getUserId().equals(sessionUserId)){
+    public void isOwner(Long sessionUserId) {
+        if (!this.getUser().getUserId().equals(sessionUserId)) {
             throw new AuthenticationException(ErrorMessage.UNAUTHORIZED_ACCESS);
         }
     }

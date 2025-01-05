@@ -17,17 +17,17 @@ public class ErrorResponseDto {
 
     public static ErrorResponseDto of(String message) {
         return ErrorResponseDto.builder()
-                .success(false)
-                .message(message)
-                .errors(new ArrayList<>())
-                .build();
+            .success(false)
+            .message(message)
+            .errors(new ArrayList<>())
+            .build();
     }
 
     public static ErrorResponseDto of(String message, List<String> errors) {
         return ErrorResponseDto.builder()
-                .success(false)
-                .message(message)
-                .errors(errors)
-                .build();
+            .success(false)
+            .message(message)
+            .errors(errors)
+            .build();
     }
 }

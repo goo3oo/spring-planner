@@ -8,13 +8,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserMapper {
 
-    public static UserResponseDto toDto(User user){
+    public static UserResponseDto toDto(User user) {
         return new UserResponseDto(
-                user.getUserId(),
-                user.getEmail(),
-                user.getUserName(),
-                user.getCreatedAt(),
-                user.getUpdatedAt()
+            user.getUserId(),
+            user.getEmail(),
+            user.getUserName(),
+            user.getCreatedAt(),
+            user.getUpdatedAt()
         );
     }
 }

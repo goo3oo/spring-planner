@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class AuthServiceImpl implements AuthService{
+public class AuthServiceImpl implements AuthService {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
@@ -33,7 +33,7 @@ public class AuthServiceImpl implements AuthService{
 
         userService.saveUser(user);
 
-        return new AuthResponseDto(user.getEmail(), user.getUserName(   ));
+        return new AuthResponseDto(user.getEmail(), user.getUserName());
     }
 
     @Override
@@ -59,7 +59,7 @@ public class AuthServiceImpl implements AuthService{
     public AuthResponseDto logOut(HttpSession session) {
         Long sessionUserId = AuthSession.getSession(session);
         // 로그인 상태인지 확인
-        if(sessionUserId == null){
+        if (sessionUserId == null) {
             throw new LoginException(ErrorMessage.USER_LOGGED_OUT);
         }
 
@@ -67,6 +67,6 @@ public class AuthServiceImpl implements AuthService{
 
         AuthSession.invalidSession(session);
 
-        return new AuthResponseDto(user.getEmail(),user.getUserName());
+        return new AuthResponseDto(user.getEmail(), user.getUserName());
     }
 }

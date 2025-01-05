@@ -12,10 +12,10 @@ import lombok.Getter;
 public class CommentRequestDto {
 
     @NotBlank(message = ValidFailMessages.NOT_NULL)
-    @Size(min = 1, max = 500 , message = ValidFailMessages.COMMENT_LENGTH)
+    @Size(min = 1, max = 500, message = ValidFailMessages.COMMENT_LENGTH)
     private String content;
 
-    public Comment toEntity(User user, Plan plan){
+    public Comment toEntity(User user, Plan plan) {
         return new Comment(user, plan, content);
     }
 }

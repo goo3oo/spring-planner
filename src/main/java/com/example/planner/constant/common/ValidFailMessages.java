@@ -4,6 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class ValidFailMessages {
+
     // 유효성 검사 실패 메시지
     public static final String NOT_NULL = "필수 값이 없음";
     public static final String INVALID_EMAIL_FORMAT = "잘못된 이메일 형식";

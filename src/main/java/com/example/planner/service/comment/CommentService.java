@@ -8,11 +8,19 @@ import java.util.Map;
 public interface CommentService {
 
     CommentResponseDto postComment(CommentRequestDto requestDto, Long sessionUserId, Long planId);
+
     List<CommentResponseDto> findAllCommentByUserId(Long userId);
+
     List<CommentResponseDto> findAllCommentByPlanId(Long planId);
+
     CommentResponseDto findCommentById(Long commentId);
-    CommentResponseDto updateComment(Long commentId, Long sessionUserId, CommentRequestDto requestDto);
+
+    CommentResponseDto updateComment(Long commentId, Long sessionUserId,
+        CommentRequestDto requestDto);
+
     void deleteComment(Long commentId, Long sessionUserId);
+
     int getCommentCountByPlanId(Long planId);
-    List<Object[]>  countCommentsByPlanIds(List<Long> planIds);
+
+    List<Object[]> countCommentsByPlanIds(List<Long> planIds);
 }

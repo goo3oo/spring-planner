@@ -15,20 +15,24 @@ import java.util.List;
 @RestControllerAdvice
 @Slf4j
 public class GlobalExceptionHandler {
+
     // 벨리데이션 관련 예외
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponseDto> handleValidationException(MethodArgumentNotValidException ex) {
+    public ResponseEntity<ErrorResponseDto> handleValidationException(
+        MethodArgumentNotValidException ex) {
 
         BindingResult bindingResult = ex.getBindingResult();
         List<String> errorMessages = BindingResultUtils.extractErrorMessages(bindingResult);
 
-        ErrorResponseDto responseDto = ErrorResponseDto.of(ErrorMessage.VALIDATION_ERROR.getMessage(), errorMessages);
+        ErrorResponseDto responseDto = ErrorResponseDto.of(
+            ErrorMessage.VALIDATION_ERROR.getMessage(), errorMessages);
         return new ResponseEntity<>(responseDto, ErrorMessage.VALIDATION_ERROR.getHttpStatus());
     }
 
     // Auth 관련 예외
     @ExceptionHandler(AuthenticationException.class)
-    public ResponseEntity<ErrorResponseDto> handleAuthenticationException(AuthenticationException ex) {
+    public ResponseEntity<ErrorResponseDto> handleAuthenticationException(
+        AuthenticationException ex) {
 
         ErrorResponseDto responseDto = ErrorResponseDto.of(ex.getMessage());
         return new ResponseEntity<>(responseDto, ex.getErrorMessage().getHttpStatus());
@@ -44,7 +48,8 @@ public class GlobalExceptionHandler {
 
     // 코멘트 Not Found 예외
     @ExceptionHandler(CommentNotFoundException.class)
-    public ResponseEntity<ErrorResponseDto> handleCommentNotFoundException(CommentNotFoundException ex) {
+    public ResponseEntity<ErrorResponseDto> handleCommentNotFoundException(
+        CommentNotFoundException ex) {
 
         ErrorResponseDto responseDto = ErrorResponseDto.of(ex.getMessage());
         return new ResponseEntity<>(responseDto, ex.getErrorMessage().getHttpStatus());

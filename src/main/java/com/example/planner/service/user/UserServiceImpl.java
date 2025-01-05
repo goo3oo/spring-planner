@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Transactional
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService{
     @Transactional(readOnly = true)
     public UserResponseDto findUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(()->new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
+            .orElseThrow(() -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
 
         return UserMapper.toDto(user);
     }
@@ -44,14 +44,15 @@ public class UserServiceImpl implements UserService{
         }
 
         return users.stream()
-                .map(UserMapper::toDto)
-                .collect(Collectors.toList());
+            .map(UserMapper::toDto)
+            .collect(Collectors.toList());
     }
 
     @Override
-    public UserResponseDto updatePassword(Long id, Long sessionUserId, UserUpdatePasswordRequestDto requestDto) {
+    public UserResponseDto updatePassword(Long id, Long sessionUserId,
+        UserUpdatePasswordRequestDto requestDto) {
         User user = userRepository.findById(id)
-                .orElseThrow(()->new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
+            .orElseThrow(() -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         // 로그인한 유저 본인의 정보를 수정하는지 확인 ( User entity 로 로직 위임 )
         user.isOwner(sessionUserId);
 
@@ -61,9 +62,10 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public UserResponseDto updateUserName(Long id, Long sessionUserId, UserUpdateUserIdRequestDto requestDto) {
+    public UserResponseDto updateUserName(Long id, Long sessionUserId,
+        UserUpdateUserIdRequestDto requestDto) {
         User user = userRepository.findById(id)
-                .orElseThrow(()->new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
+            .orElseThrow(() -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         // 로그인한 유저 본인의 정보를 수정하는지 확인 ( User entity 로 로직 위임 )
         user.isOwner(sessionUserId);
 
@@ -75,7 +77,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public void deleteUser(Long id, Long sessionUserId) {
         User user = userRepository.findById(id)
-                .orElseThrow(()->new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
+            .orElseThrow(() -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
         // 로그인한 유저 본인의 정보를 수정하는지 확인 ( User entity 로 로직 위임 )
         user.isOwner(sessionUserId);
 
@@ -83,37 +85,37 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public void checkDuplicateEmail(String email){
-        if(userRepository.existsByEmail(email)){
+    public void checkDuplicateEmail(String email) {
+        if (userRepository.existsByEmail(email)) {
             throw new AuthenticationException(ErrorMessage.DUPLICATE_EMAIL);
         }
     }
 
     @Override
-    public User findUserByEmailOrThrow(String email){
+    public User findUserByEmailOrThrow(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new AuthenticationException(ErrorMessage.EMAIL_NOT_FOUND));
+            .orElseThrow(() -> new AuthenticationException(ErrorMessage.EMAIL_NOT_FOUND));
     }
 
     @Override
-    public User findUserByUserIdOrThrow(Long sessionUserId){
-         return userRepository.findById(sessionUserId)
-                .orElseThrow(()->new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
+    public User findUserByUserIdOrThrow(Long sessionUserId) {
+        return userRepository.findById(sessionUserId)
+            .orElseThrow(() -> new UserNotFoundException(ErrorMessage.USER_NOT_FOUND));
     }
 
     @Override
-    public void saveUser(User user){
+    public void saveUser(User user) {
         userRepository.save(user);
     }
 
     @Override
     public User findById(Long sessionUserId) {
         return userRepository.findById(sessionUserId)
-                .orElseThrow(()-> new PlanNotFoundException(ErrorMessage.PLAN_NOT_FOUND));
+            .orElseThrow(() -> new PlanNotFoundException(ErrorMessage.PLAN_NOT_FOUND));
     }
 
     @Override
-    public boolean existsByUserId(Long userId){
+    public boolean existsByUserId(Long userId) {
         return userRepository.existsByUserId(userId);
     }
 }

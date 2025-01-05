@@ -25,42 +25,46 @@ public class UserController {
     public ResponseEntity<SuccessResponseDto<UserResponseDto>> findUserById(@PathVariable Long id) {
         UserResponseDto responseDto = service.findUserById(id);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(SuccessResponseDto.of(SuccessMessages.USER_FIND_SUCCESS.getMessage(), responseDto));
+            .body(
+                SuccessResponseDto.of(SuccessMessages.USER_FIND_SUCCESS.getMessage(), responseDto));
     }
 
     @GetMapping
     public ResponseEntity<SuccessResponseDto<UserListResponseDto>> findAllUser() {
         UserListResponseDto responseDto = new UserListResponseDto(service.findAllUser());
         return ResponseEntity.status(HttpStatus.OK)
-                .body(SuccessResponseDto.of(SuccessMessages.USER_FIND_SUCCESS.getMessage(), responseDto));
+            .body(
+                SuccessResponseDto.of(SuccessMessages.USER_FIND_SUCCESS.getMessage(), responseDto));
     }
 
     @PatchMapping("/{id}/password")
     public ResponseEntity<SuccessResponseDto<UserResponseDto>> updatePassword(
-            @Valid @RequestBody UserUpdatePasswordRequestDto requestDto,
-            @PathVariable Long id,
-            @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
+        @Valid @RequestBody UserUpdatePasswordRequestDto requestDto,
+        @PathVariable Long id,
+        @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
     ) {
         UserResponseDto responseDto = service.updatePassword(id, sessionUserId, requestDto);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(SuccessResponseDto.of(SuccessMessages.PASSWORD_UPDATE_SUCCESS.getMessage(), responseDto));
+            .body(SuccessResponseDto.of(SuccessMessages.PASSWORD_UPDATE_SUCCESS.getMessage(),
+                responseDto));
     }
 
     @PatchMapping("/{id}/userName")
     public ResponseEntity<SuccessResponseDto<UserResponseDto>> updateUserName(
-            @Valid @RequestBody UserUpdateUserIdRequestDto requestDto,
-            @PathVariable Long id,
-            @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
+        @Valid @RequestBody UserUpdateUserIdRequestDto requestDto,
+        @PathVariable Long id,
+        @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
     ) {
         UserResponseDto responseDto = service.updateUserName(id, sessionUserId, requestDto);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(SuccessResponseDto.of(SuccessMessages.USERNAME_UPDATE_SUCCESS.getMessage(), responseDto));
+            .body(SuccessResponseDto.of(SuccessMessages.USERNAME_UPDATE_SUCCESS.getMessage(),
+                responseDto));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<SuccessResponseDto<Void>> deleteUser(
-            @PathVariable Long id,
-            @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
+        @PathVariable Long id,
+        @SessionAttribute(name = AuthSession.SESSION_KEY, required = true) Long sessionUserId
     ) {
         service.deleteUser(id, sessionUserId);
         return new ResponseEntity<>(HttpStatus.OK);

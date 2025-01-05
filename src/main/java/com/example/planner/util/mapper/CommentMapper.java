@@ -8,15 +8,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class CommentMapper {
 
-    public static CommentResponseDto toDto(Comment comment){
+    public static CommentResponseDto toDto(Comment comment) {
         return new CommentResponseDto(
-                comment.getCommentId(),
-                comment.getPlan().getPlanId(),
-                comment.getUser().getEmail(),
-                comment.getUser().getUserName(),
-                comment.getContent(),
-                comment.getCreatedAt(),
-                comment.getUpdatedAt()
+            comment.getCommentId(),
+            comment.getPlan().getPlanId(),
+            comment.getUser().getEmail(),
+            comment.getUser().getUserName(),
+            comment.getContent(),
+            comment.getCreatedAt(),
+            comment.getUpdatedAt()
         );
     }
 }

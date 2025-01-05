@@ -9,8 +9,8 @@ public class BindingResultUtils {
 
     public static List<String> extractErrorMessages(BindingResult bindingResult) {
         return bindingResult.getFieldErrors()
-                .stream()
-                .map(DefaultMessageSourceResolvable::getDefaultMessage)
-                .toList();
+            .stream()
+            .map(DefaultMessageSourceResolvable::getDefaultMessage)
+            .toList();
     }
 }

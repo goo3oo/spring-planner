@@ -13,30 +13,32 @@ import java.io.IOException;
 public class LoginFilter implements Filter {
 
     private static final String[] WHITE_LIST = {"/", "/auth/signup", "/auth/login", "/auth/logout"};
+
     @Override
     public void doFilter(
-            ServletRequest request,
-            ServletResponse response,
-            FilterChain chain
+        ServletRequest request,
+        ServletResponse response,
+        FilterChain chain
     ) throws IOException, ServletException {
 
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String requestURI = httpRequest.getRequestURI();
 
-        if (!isWhiteList(requestURI) && !isGetMethod(httpRequest)){
+        if (!isWhiteList(requestURI) && !isGetMethod(httpRequest)) {
             HttpSession session = httpRequest.getSession(false);
 
-            if (session == null || session.getAttribute(AuthSession.SESSION_KEY) == null ){
+            if (session == null || session.getAttribute(AuthSession.SESSION_KEY) == null) {
                 throw new AuthenticationException(ErrorMessage.LOGIN_REQUIRED);
             }
         }
         chain.doFilter(request, response);
     }
 
-    private boolean isWhiteList(String requestURI){
+    private boolean isWhiteList(String requestURI) {
         return PatternMatchUtils.simpleMatch(WHITE_LIST, requestURI);
     }
-    private boolean isGetMethod(HttpServletRequest request){
+
+    private boolean isGetMethod(HttpServletRequest request) {
         return "GET".equals(request.getMethod());
     }
 }

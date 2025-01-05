@@ -12,9 +12,14 @@ import java.time.LocalDate;
 public interface PlanService {
 
     PlanResponseDto createPlan(PlanRequestDto requestDto, HttpSession session);
+
     PlanResponseDto findPlanById(Long planId);
+
     PlanResponseDto updatePlan(Long planId, Long sessionUserId, PlanRequestDto requestDto);
+
     void deletePlan(Long planId, Long sessionUserId);
+
     Plan findById(Long planId);
+
     PageResponseDto findAllPlan(Long userId, LocalDate date, Pageable pageable);
 }

@@ -33,19 +33,19 @@ public class Comment extends BaseEntity {
     @Column(nullable = false)
     private String content;
 
-    public Comment(User user, Plan plan, String content){
+    public Comment(User user, Plan plan, String content) {
         this.user = user;
         this.plan = plan;
         this.content = content;
     }
 
     public void isOwner(Long userId) {
-        if(!this.getUser().getUserId().equals(userId)) {
+        if (!this.getUser().getUserId().equals(userId)) {
             throw new LoginException(ErrorMessage.UNAUTHORIZED_ACCESS);
         }
     }
 
-    public void updateComment(String content){
+    public void updateComment(String content) {
         this.content = content;
     }
 }

@@ -10,14 +10,26 @@ import java.util.List;
 public interface UserService {
 
     UserResponseDto findUserById(Long id);
+
     List<UserResponseDto> findAllUser();
-    UserResponseDto updatePassword(Long id, Long sessionUserId, UserUpdatePasswordRequestDto requestDto);
-    UserResponseDto updateUserName(Long id, Long sessionUserId, UserUpdateUserIdRequestDto requestDto);
+
+    UserResponseDto updatePassword(Long id, Long sessionUserId,
+        UserUpdatePasswordRequestDto requestDto);
+
+    UserResponseDto updateUserName(Long id, Long sessionUserId,
+        UserUpdateUserIdRequestDto requestDto);
+
     void deleteUser(Long id, Long sessionUserId);
+
     void checkDuplicateEmail(String email);
+
     User findUserByEmailOrThrow(String email);
+
     User findUserByUserIdOrThrow(Long sessionUserId);
+
     void saveUser(User user);
+
     User findById(Long sessionUserId);
+
     boolean existsByUserId(Long userId);
 }

@@ -10,6 +10,6 @@ public class LoginException extends RuntimeException {
 
     public LoginException(ErrorMessage errorMessage) {
         super(errorMessage.getMessage());
-      this.errorMessage = errorMessage;
+        this.errorMessage = errorMessage;
     }
 }

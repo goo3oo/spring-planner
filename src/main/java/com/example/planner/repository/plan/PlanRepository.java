@@ -15,10 +15,10 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
 
     @EntityGraph(attributePaths = {"user"})
     @Query("SELECT p FROM Plan p WHERE (:userId IS NULL OR p.user.userId = :userId) " +
-            "AND (:date IS NULL OR FUNCTION('DATE', p.updatedAt) = :date)")
+        "AND (:date IS NULL OR FUNCTION('DATE', p.updatedAt) = :date)")
     Page<Plan> findByUserIdAndUpdatedAt(@Param("userId") Long userId,
-                                        @Param("date") LocalDate date,
-                                        Pageable pageable);
+        @Param("date") LocalDate date,
+        Pageable pageable);
 
     @EntityGraph(attributePaths = {"user"})
     Optional<Plan> findPlanByPlanId(Long planId);

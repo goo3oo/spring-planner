@@ -3,6 +3,7 @@ package com.example.planner.util;
 import jakarta.servlet.http.HttpSession;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AuthSession {
 
@@ -13,7 +14,7 @@ public class AuthSession {
     }
 
     public static Long getSession(HttpSession session) {
-        if(session != null){
+        if (session != null) {
             return (Long) session.getAttribute(SESSION_KEY);
         }
         return null;

@@ -42,7 +42,7 @@ public class PlanServiceImpl implements PlanService {
 
         planRepository.save(plan);
 
-        return PlanMapper.toDto(plan,0);
+        return PlanMapper.toDto(plan, 0);
     }
 
     @Transactional(readOnly = true)
@@ -54,17 +54,17 @@ public class PlanServiceImpl implements PlanService {
         }
 
         List<Long> planIds = plans.stream()
-                .map(Plan::getPlanId)
-                .collect(Collectors.toList());
+            .map(Plan::getPlanId)
+            .collect(Collectors.toList());
         // planId와 commentCount 키, 값 리스트
         Map<Long, Integer> commentCounts = commentQueryService.getCommentCounts(planIds);
-        
+
         List<PlanResponseDto> dtoList = plans.stream()
-                .map(plan -> {
-                    int commentCount = commentCounts.getOrDefault(plan.getPlanId(), 0);
-                    return PlanMapper.toDto(plan, commentCount);
-                })
-                .toList();
+            .map(plan -> {
+                int commentCount = commentCounts.getOrDefault(plan.getPlanId(), 0);
+                return PlanMapper.toDto(plan, commentCount);
+            })
+            .toList();
 
         PagingDto pagingDto = PlanMapper.toDto(plans);
 
@@ -75,7 +75,7 @@ public class PlanServiceImpl implements PlanService {
     @Transactional(readOnly = true)
     public PlanResponseDto findPlanById(Long planId) {
         Plan plan = planRepository.findPlanByPlanId(planId)
-                .orElseThrow(() -> new PlanNotFoundException(ErrorMessage.PLAN_NOT_FOUND));
+            .orElseThrow(() -> new PlanNotFoundException(ErrorMessage.PLAN_NOT_FOUND));
 
         return PlanMapper.toDto(plan, commentQueryService.getCommentCount(planId));
     }
@@ -83,7 +83,7 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public PlanResponseDto updatePlan(Long planId, Long sessionUserId, PlanRequestDto requestDto) {
         Plan plan = planRepository.findById(planId)
-                .orElseThrow(() -> new PlanNotFoundException(ErrorMessage.PLAN_NOT_FOUND));
+            .orElseThrow(() -> new PlanNotFoundException(ErrorMessage.PLAN_NOT_FOUND));
         // 로그인한 유저가 작성한 일정인지 확인 ( Plan Entity 로 로직 위입 )
         plan.isOwner(sessionUserId);
 
@@ -95,7 +95,7 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public void deletePlan(Long planId, Long sessionUserId) {
         Plan plan = planRepository.findById(planId)
-                .orElseThrow(() -> new PlanNotFoundException(ErrorMessage.PLAN_NOT_FOUND));
+            .orElseThrow(() -> new PlanNotFoundException(ErrorMessage.PLAN_NOT_FOUND));
         // 로그인한 유저가 작성한 일정인지 확인 ( Plan Entity 로 로직 위입 )
         plan.isOwner(sessionUserId);
 
@@ -105,6 +105,6 @@ public class PlanServiceImpl implements PlanService {
     @Override
     public Plan findById(Long planId) {
         return planRepository.findById(planId)
-                .orElseThrow(() -> new PlanNotFoundException(ErrorMessage.PLAN_NOT_FOUND));
+            .orElseThrow(() -> new PlanNotFoundException(ErrorMessage.PLAN_NOT_FOUND));
     }
 }

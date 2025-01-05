@@ -31,7 +31,7 @@ public enum SuccessMessages {
 
     private final String message;
 
-    SuccessMessages(String message){
+    SuccessMessages(String message) {
         this.message = message;
     }
 }

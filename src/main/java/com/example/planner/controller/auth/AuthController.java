@@ -27,21 +27,21 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<SuccessResponseDto<AuthResponseDto>> signUp(
-            @Valid @RequestBody SignupRequestDto requestDto
+        @Valid @RequestBody SignupRequestDto requestDto
     ) {
         AuthResponseDto responseDto = authService.createUser(requestDto);
         return ResponseEntity.status(HttpStatus.CREATED).
-                body(SuccessResponseDto.of(SuccessMessages.SIGN_UP_SUCCESS.getMessage(), responseDto));
+            body(SuccessResponseDto.of(SuccessMessages.SIGN_UP_SUCCESS.getMessage(), responseDto));
     }
 
     @PostMapping("/login")
     public ResponseEntity<SuccessResponseDto<AuthResponseDto>> logIn(
-            @Valid @RequestBody LoginRequestDto requestDto,
-            HttpServletRequest request
+        @Valid @RequestBody LoginRequestDto requestDto,
+        HttpServletRequest request
     ) {
         AuthResponseDto responseDto = authService.logIn(requestDto, request);
         return ResponseEntity.status(HttpStatus.OK).
-                body(SuccessResponseDto.of(SuccessMessages.LOGIN_SUCCESS.getMessage(), responseDto));
+            body(SuccessResponseDto.of(SuccessMessages.LOGIN_SUCCESS.getMessage(), responseDto));
     }
 
     @PostMapping("/logout")
@@ -49,6 +49,6 @@ public class AuthController {
 
         AuthResponseDto responseDto = authService.logOut(session);
         return ResponseEntity.status(HttpStatus.OK).
-                body(SuccessResponseDto.of(SuccessMessages.LOGOUT_SUCCESS.getMessage(), responseDto));
+            body(SuccessResponseDto.of(SuccessMessages.LOGOUT_SUCCESS.getMessage(), responseDto));
     }
 }

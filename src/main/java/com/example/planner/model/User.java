@@ -40,8 +40,8 @@ public class User extends BaseEntity {
         }
     }
 
-    public void isOwner(Long sessionId){
-        if(!this.getUserId().equals(sessionId)){
+    public void isOwner(Long sessionId) {
+        if (!this.getUserId().equals(sessionId)) {
             throw new AuthenticationException(ErrorMessage.UNAUTHORIZED_ACCESS);
         }
     }

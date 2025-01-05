@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpSession;
 public interface AuthService {
 
     AuthResponseDto createUser(SignupRequestDto requestDto);
+
     AuthResponseDto logIn(LoginRequestDto requestDto, HttpServletRequest request);
+
     AuthResponseDto logOut(HttpSession session);
 }

@@ -11,7 +11,7 @@ public class ValidationResponseDto {
 
     private List<String> errorMessage;
 
-    public static ValidationResponseDto fail(List<String> errorMessage){
+    public static ValidationResponseDto fail(List<String> errorMessage) {
         return new ValidationResponseDto(errorMessage);
     }
 }

@@ -21,7 +21,7 @@ public class SignupRequestDto {
     @Pattern(regexp = "^[a-zA-Z0-9~!@#$-_+.,:?]{4,20}+[^<>?{}&'\"/;%\\s()^=#]*$", message = ValidFailMessages.PASSWORD_LENGTH)
     private String password;
 
-    public User toEntity(String encodedPassword){
+    public User toEntity(String encodedPassword) {
         return new User(email, userName, encodedPassword);
     }
 }
