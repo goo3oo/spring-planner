@@ -25,12 +25,14 @@ public class AuthServiceImpl implements AuthService{
 
     @Override
     public AuthResponseDto createUser(SignupRequestDto requestDto) {
-        String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
-        User user = requestDto.toEntity(encodedPassword);
         // 이메일 중복 체크
         userService.checkDuplicateEmail(requestDto.getEmail());
 
+        String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
+        User user = requestDto.toEntity(encodedPassword);
+
         userService.saveUser(user);
+
         return new AuthResponseDto(user.getEmail(), user.getUserName(   ));
     }
 
