@@ -1,0 +1,50 @@
+Level1-1 부터 Level2-2 까지 커밋을 기능별로 쪼개지 못 했습니다.
+커밋 메시지와 상관 없는 것들도 묶어서 커밋 해버렸습니다.
+그래서 기능 변경에 따른 클래스들을 따로 정리했습니다.
+죄송합니다.ㅠㅠ
+
+Level 1-1
+- 클래스 구조 변경
+
+Level 2-1
+- GlobalException Class 추가
+- LoginException Class 추가 ( 기존 AuthException Class 로 처리하던 것 분화 )
+- Controller 계층의 모든 Class 변경 ( GlobalException 추가로 기존의 try-catch 제거 )
+- ErrorMessages, SuccessMessages Enum 추가 ( Entity 별로 나눈 Enum -> 통합 )
+- Service 계층의 모든 Class 변경 ( Enum 변경에 따른 변경 )
+
+- Validation 의 message: String -> Enum
+  - LoginRequestDto 변경
+  - SignupRequestDto 변경
+  - CommentRequestDto 변경
+  - PlanRequestDto 변경
+  - UserUpdatePasswordRequestDto 변경
+  - UserUpdateUserIdRequestDto 변경
+
+- ApiResponseDto -> error, success 응답으로 분화
+  - ErrorResponseDto 추가
+  - SuccessResponseDto 추가
+
+Level 2-2
+- 로그인 기능 리펙토링
+  - 유저가 로그인중일 때, 기존 유저 로그아웃 후 새로운 유저 로그인 하기가 제대로 동작하지 않던 것 변경
+    (fix인데 refactor로 커밋했네요ㅠㅠ)
+  - AuthController 변경
+  - AuthServiceImpl, AuthService 변경
+
+
+- exception 리펙토링
+  - 부적절한 에러 메시지들 변경
+  - CommentController 변경
+
+Level 2-2
+- 같은 엔티티의 레포지토리를 제외하고, 서비스에 주입하던 레포지토리들을 서비스로 변경
+  - Service 계층의 모든 Class 변경, 관련된 Repository 변경
+
+- commentCount의 값을 한 번에 받아오는 방법으로 변경
+  - CommentQueryService Class 추가
+  - CommentRepository 변경
+  - PlanService, PlanServiceImpl 변경
+  - CommentService, CommentServiceImpl 변경
+
+
