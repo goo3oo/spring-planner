@@ -26,97 +26,91 @@ import java.util.stream.Collectors;
 @Transactional
 public class CommentServiceImpl implements CommentService {
 
-    private final UserRepository userRepository;
-    private final CommentRepository commentRepository;
-    private final UserService userService;
-    private final PlanService planService;
+  private final CommentRepository commentRepository;
+  private final UserService userService;
+  private final PlanService planService;
 
-
-    @Override
-    public CommentResponseDto postComment(CommentRequestDto requestDto, Long sessionUserId, Long planId) {
-        if (sessionUserId == null) {
-            throw new AuthenticationException(ErrorMessage.USER_LOGGED_OUT);
-        }
-
-        User user = userService.findById(sessionUserId);
-        Plan plan = planService.findById(planId);
-        Comment comment = requestDto.toEntity(user, plan);
-
-        commentRepository.save(comment);
-
-        return CommentMapper.toDto(comment);
+  @Override
+  public CommentResponseDto postComment(CommentRequestDto requestDto, Long sessionUserId,
+      Long planId) {
+    if (sessionUserId == null) {
+      throw new AuthenticationException(ErrorMessage.USER_LOGGED_OUT);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<CommentResponseDto> findAllCommentByUserId(Long userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND);
-        }
+    User user = userService.findById(sessionUserId);
+    Plan plan = planService.findById(planId);
+    Comment comment = requestDto.toEntity(user, plan);
 
-        List<Comment> comments = commentRepository.findAllByUser_UserId(userId);
+    commentRepository.save(comment);
 
-        if (comments.isEmpty()) {
-            throw new CommentNotFoundException(ErrorMessage.COMMENT_NOT_FOUND);
-        }
+    return CommentMapper.toDto(comment);
+  }
 
-        return comments.stream()
-                .map(CommentMapper::toDto)
-                .collect(Collectors.toList());
+  @Override
+  @Transactional(readOnly = true)
+  public List<CommentResponseDto> findAllCommentByUserId(Long userId) {
+    if (!userService.existsByUserId(userId)) {
+      throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND);
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<CommentResponseDto> findAllCommentByPlanId(Long planId) {
-        List<Comment> comments = commentRepository.findAllByPlan_PlanId(planId);
+    List<Comment> comments = commentRepository.findAllByUser_UserId(userId)
+        .orElseThrow(() -> new CommentNotFoundException(ErrorMessage.COMMENT_NOT_FOUND));
 
-        if (comments.isEmpty()) {
-            throw new PlanNotFoundException(ErrorMessage.PLAN_NOT_FOUND);
-        }
+    return comments.stream()
+        .map(CommentMapper::toDto)
+        .collect(Collectors.toList());
+  }
 
-        return comments.stream()
-                .map(CommentMapper::toDto)
-                .collect(Collectors.toList());
-    }
+  @Override
+  @Transactional(readOnly = true)
+  public List<CommentResponseDto> findAllCommentByPlanId(Long planId) {
+    List<Comment> comments = commentRepository.findAllByPlan_PlanId(planId)
+        .orElseThrow(() -> new PlanNotFoundException(ErrorMessage.PLAN_NOT_FOUND));
 
-    @Override
-    @Transactional(readOnly = true)
-    public CommentResponseDto findCommentById(Long commentId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentNotFoundException(ErrorMessage.COMMENT_NOT_FOUND));
-        return CommentMapper.toDto(comment);
-    }
+    return comments.stream()
+        .map(CommentMapper::toDto)
+        .collect(Collectors.toList());
+  }
 
-    @Override
-    public CommentResponseDto updateComment(Long commentId, Long sessionUserId, CommentRequestDto requestDto) {
+  @Override
+  @Transactional(readOnly = true)
+  public CommentResponseDto findCommentById(Long commentId) {
+    Comment comment = commentRepository.findById(commentId)
+        .orElseThrow(() -> new CommentNotFoundException(ErrorMessage.COMMENT_NOT_FOUND));
 
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentNotFoundException(ErrorMessage.COMMENT_NOT_FOUND));
-        // 로그인한 유저가 작성한 코멘트인지 확인 ( Comment Entity 로 로직 위임 )
-        comment.isOwner(sessionUserId);
+    return CommentMapper.toDto(comment);
+  }
 
-        comment.updateComment(requestDto.getContent());
+  @Override
+  public CommentResponseDto updateComment(Long commentId, Long sessionUserId,
+      CommentRequestDto requestDto) {
+    Comment comment = commentRepository.findById(commentId)
+        .orElseThrow(() -> new CommentNotFoundException(ErrorMessage.COMMENT_NOT_FOUND));
+    // 로그인한 유저가 작성한 코멘트인지 확인 ( Comment Entity 로 로직 위임 )
+    comment.isOwner(sessionUserId);
 
-        return CommentMapper.toDto(comment);
-    }
+    comment.updateComment(requestDto.getContent());
 
-    @Override
-    public void deleteComment(Long commentId, Long sessionUserId) {
-        Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new CommentNotFoundException(ErrorMessage.COMMENT_NOT_FOUND));
-        // 로그인한 유저가 작성한 코멘트인지 확인 ( Comment Entity 로 로직 위임 )
-        comment.isOwner(sessionUserId);
+    return CommentMapper.toDto(comment);
+  }
 
-        commentRepository.delete(comment);
-    }
+  @Override
+  public void deleteComment(Long commentId, Long sessionUserId) {
+    Comment comment = commentRepository.findById(commentId)
+        .orElseThrow(() -> new CommentNotFoundException(ErrorMessage.COMMENT_NOT_FOUND));
+    // 로그인한 유저가 작성한 코멘트인지 확인 ( Comment Entity 로 로직 위임 )
+    comment.isOwner(sessionUserId);
 
-    @Override
-    public int getCommentCountByPlanId(Long planId) {
-        return commentRepository.countByPlan_PlanId(planId);
-    }
+    commentRepository.delete(comment);
+  }
 
-    public List<Object[]> countCommentsByPlanIds(List<Long> planIds) {
-        return commentRepository.countCommentsByPlanIds(planIds);
-    }
+  @Override
+  public int getCommentCountByPlanId(Long planId) {
+    return commentRepository.countByPlan_PlanId(planId);
+  }
+
+  public List<Object[]> countCommentsByPlanIds(List<Long> planIds) {
+    return commentRepository.countCommentsByPlanIds(planIds);
+  }
 }
 

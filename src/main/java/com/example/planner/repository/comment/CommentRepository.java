@@ -6,14 +6,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    List<Comment> findAllByUser_UserId(Long userId);
-    List<Comment> findAllByPlan_PlanId(Long planId);
+    Optional<List<Comment>> findAllByUser_UserId(Long userId);
+    Optional<List<Comment>> findAllByPlan_PlanId(Long planId);
     int countByPlan_PlanId(Long planId);
     @Query("SELECT c.plan.planId as planId, COUNT(c) as commentCount FROM Comment c WHERE c.plan.planId IN :planIds GROUP BY c.plan.planId")
     List<Object[]> countCommentsByPlanIds(@Param("planIds") List<Long> planIds);
