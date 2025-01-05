@@ -39,10 +39,10 @@ public class UserServiceImpl implements UserService{
     @Transactional(readOnly = true)
     public List<UserResponseDto> findAllUser() {
         List<User> users = userRepository.findAll();
-
         if (users.isEmpty()) {
             throw new UserNotFoundException(ErrorMessage.USER_NOT_FOUND);
         }
+
         return users.stream()
                 .map(UserMapper::toDto)
                 .collect(Collectors.toList());
@@ -110,5 +110,10 @@ public class UserServiceImpl implements UserService{
     public User findById(Long sessionUserId) {
         return userRepository.findById(sessionUserId)
                 .orElseThrow(()-> new PlanNotFoundException(ErrorMessage.PLAN_NOT_FOUND));
+    }
+
+    @Override
+    public boolean existsByUserId(Long userId){
+        return userRepository.existsByUserId(userId);
     }
 }

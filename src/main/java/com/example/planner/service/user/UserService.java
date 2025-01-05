@@ -19,4 +19,5 @@ public interface UserService {
     User findUserByUserIdOrThrow(Long sessionUserId);
     void saveUser(User user);
     User findById(Long sessionUserId);
+    boolean existsByUserId(Long userId);
 }
